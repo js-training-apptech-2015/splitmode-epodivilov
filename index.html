@@ -44,24 +44,6 @@
     </div><!-- /.container-fluid -->
 </nav>
 
-<div id="game_board">
-    <div class="flex-game-row">
-        <div id="game_field_0" class="flex-game-field">○</div>
-        <div id="game_field_1" class="flex-game-field">○</div>
-        <div id="game_field_2" class="flex-game-field">×</div>
-    </div>
-    <div class="flex-game-row">
-        <div id="game_field_3" class="flex-game-field">○</div>
-        <div id="game_field_4" class="flex-game-field">×</div>
-        <div id="game_field_5" class="flex-game-field">○</div>
-    </div>
-    <div class="flex-game-row">
-        <div id="game_field_6" class="flex-game-field">×</div>
-        <div id="game_field_7" class="flex-game-field">○</div>
-        <div id="game_field_8" class="flex-game-field">○</div>
-    </div>
-</div>
-
 <div id="newGameModal" class="modal fade" data-backdrop="static">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -94,14 +76,23 @@
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
-<footer class="footer">
-    <div id="score_board" class="flex-score-board">
-        <div class="flex-score-field"><span id="player1">Jamaica</span>:<span id="score1">5</span></div>
-        <!-- Debug info curent move-->
-        <!--<div class="flex-score-field"><span id="curentMove">×</span></div>-->
-        <div class="flex-score-field"><span id="player2">Argentina</span>:<span id="score2">0</span></div>
+<div id="game_board">
+    <div class="flex-game-row">
+        <div id="game_field_0" class="flex-game-field">○</div>
+        <div id="game_field_1" class="flex-game-field">○</div>
+        <div id="game_field_2" class="flex-game-field">×</div>
     </div>
-</footer>
+    <div class="flex-game-row">
+        <div id="game_field_3" class="flex-game-field">○</div>
+        <div id="game_field_4" class="flex-game-field">×</div>
+        <div id="game_field_5" class="flex-game-field">○</div>
+    </div>
+    <div class="flex-game-row">
+        <div id="game_field_6" class="flex-game-field">×</div>
+        <div id="game_field_7" class="flex-game-field">○</div>
+        <div id="game_field_8" class="flex-game-field">○</div>
+    </div>
+</div>
 
 <div id="resultModal" class="modal fadebs-example-modal-sm" data-backdrop="static">
     <div class="modal-dialog modal-sm">
@@ -110,7 +101,7 @@
                 <h4 class="modal-title text-center">Game over</h4>
             </div>
             <div class="modal-body">
-                    <h4 id="winner" class="modal-title text-center">Player wins!</h4>
+                <h4 id="winner" class="modal-title text-center">Player wins!</h4>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default pull-left" data-dismiss="modal" tabindex=4>Continue</button>
@@ -119,6 +110,13 @@
         </div>
     </div>
 </div>
+
+<footer class="footer">
+    <div id="score_board" class="flex-score-board">
+        <div class="flex-score-field"><span id="player1" class="text-muted">Jamaica</span>:<span id="score1">5</span></div>
+        <div class="flex-score-field"><span id="player2" class="text-muted">Argentina</span>:<span id="score2">0</span></div>
+    </div>
+</footer>
 
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>

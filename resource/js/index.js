@@ -18,8 +18,6 @@ function clearGameBoard(clearScore) {
         cell[id] = field;
         field.innerHTML = "";
     });
-    //Debug information who curent move
-    //document.getElementById("curentMove").innerHTML = steps[1];
     document.getElementById("score1").innerHTML = score1;
     document.getElementById("score2").innerHTML = score2;
 }
@@ -62,8 +60,13 @@ document.body.onload = function() {
             if(!document.getElementById(event.target.id).innerHTML) {
                 var curentMove = steps.pop();
                 steps.unshift(curentMove);
-                //Debug information who curent move
-                //document.getElementById("curentMove").innerHTML = steps[1];
+                if(curentMove == '×') {
+                    player2.className = "text-primary";
+                    player1.className = "text-muted";
+                } else {
+                    player1.className = "text-primary";
+                    player2.className = "text-muted";
+                }
                 document.getElementById(event.target.id).innerHTML = curentMove;
                 var isVictory = checkVictory();
                 if(isVictory != "") {
