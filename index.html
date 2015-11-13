@@ -35,40 +35,90 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                <li><a id="newGame">New game</a></li>
+                <li><a href="#newGameModal" role="button" data-toggle="modal">New game</a></li>
             </ul>
-            <ul class="nav navbar-nav navbar-right">
-                <li><a id="logIn">Log in</a></li>
-            </ul>
+            <!--<ul class="nav navbar-nav navbar-right">-->
+                <!--<li><a id="logIn" href="#myModal" role="button" class="btn" data-toggle="modal">Log in</a></li>-->
+            <!--</ul>-->
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
 </nav>
 
 <div id="game_board">
     <div class="flex-game-row">
-        <div id="game_field_11" class="flex-game-field">○</div>
-        <div id="game_field_12" class="flex-game-field">○</div>
-        <div id="game_field_13" class="flex-game-field">×</div>
+        <div id="game_field_0" class="flex-game-field">○</div>
+        <div id="game_field_1" class="flex-game-field">○</div>
+        <div id="game_field_2" class="flex-game-field">×</div>
     </div>
     <div class="flex-game-row">
-        <div id="game_field_21" class="flex-game-field">○</div>
-        <div id="game_field_22" class="flex-game-field">×</div>
-        <div id="game_field_23" class="flex-game-field">○</div>
+        <div id="game_field_3" class="flex-game-field">○</div>
+        <div id="game_field_4" class="flex-game-field">×</div>
+        <div id="game_field_5" class="flex-game-field">○</div>
     </div>
     <div class="flex-game-row">
-        <div id="game_field_31" class="flex-game-field">×</div>
-        <div id="game_field_32" class="flex-game-field">○</div>
-        <div id="game_field_33" class="flex-game-field">○</div>
+        <div id="game_field_6" class="flex-game-field">×</div>
+        <div id="game_field_7" class="flex-game-field">○</div>
+        <div id="game_field_8" class="flex-game-field">○</div>
     </div>
 </div>
 
+<div id="newGameModal" class="modal fade" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">New game</h4>
+            </div>
+            <div class="modal-body">
+                <!-- my form-->
+                <div class="row">
+                    <form action="#">
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <label for="playername1" class="text-center">Player from X team</label>
+                                <input type="text" class="form-control" id="playername1" placeholder="Player name" value="" tabindex=1>
+                            </div>
+                            <button type="button" class="btn btn-default pull-left" data-dismiss="modal" tabindex=4>Close</button>
+                        </div>
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <label for="playername2" class="text-center">Player from O team</label>
+                                <input type="text" class="form-control" id="playername2" placeholder="Player name"  value="" tabindex=2>
+                            </div>
+                            <button id="newGame" type="button" class="btn btn-primary pull-right" data-dismiss="modal" tabindex=3>New game</button>
+                        </div>
+                    </form>
+                </div>
+                <!-- my form-->
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
 <footer class="footer">
     <div id="score_board" class="flex-score-board">
-        <div class="flex-score-field"><span id="user1">Jamaica</span>:<span id="score1">5</span></div>
-        <div class="flex-score-field"><span id="curentMove">×</span></div>
-        <div class="flex-score-field"><span id="user2">Argentina</span>:<span id="score2">0</span></div>
+        <div class="flex-score-field"><span id="player1">Jamaica</span>:<span id="score1">5</span></div>
+        <!-- Debug info curent move-->
+        <!--<div class="flex-score-field"><span id="curentMove">×</span></div>-->
+        <div class="flex-score-field"><span id="player2">Argentina</span>:<span id="score2">0</span></div>
     </div>
 </footer>
+
+<div id="resultModal" class="modal fadebs-example-modal-sm" data-backdrop="static">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title text-center">Game over</h4>
+            </div>
+            <div class="modal-body">
+                    <h4 id="winner" class="modal-title text-center">Player wins!</h4>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default pull-left" data-dismiss="modal" tabindex=4>Continue</button>
+                <a href="#newGameModal" role="button" data-toggle="modal" class="btn btn-primary pull-right" data-dismiss="modal">New game</a>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
