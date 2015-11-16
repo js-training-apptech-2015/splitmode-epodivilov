@@ -1,27 +1,3 @@
-var steps = ["×", "○"];
-var gameField = document.getElementsByClassName("flex-game-field");
-var cell = [];
-var score1 = 0;
-var score2 = 0;
-var player1 = document.getElementById("player1");
-var player2 = document.getElementById("player2");
-var winner = document.getElementById("winner");
-
-function clearGameBoard(clearScore) {
-
-    if(clearScore) {
-        score1 = 0;
-        score2 = 0;
-    }
-
-    Array.prototype.forEach.call(gameField, function (field, id) {
-        cell[id] = field;
-        field.innerHTML = "";
-    });
-    document.getElementById("score1").innerHTML = score1;
-    document.getElementById("score2").innerHTML = score2;
-}
-
 function addEvent(element, eventName, callback) {
     if (element.addEventListener) {
         element.addEventListener(eventName, callback, false);
@@ -30,72 +6,148 @@ function addEvent(element, eventName, callback) {
     }
 }
 
-function checkVictory() {
-    if((cell[0].innerHTML == cell[1].innerHTML) && (cell[1].innerHTML == cell[2].innerHTML)) { return cell[0].innerHTML; }
-    if((cell[3].innerHTML == cell[4].innerHTML) && (cell[4].innerHTML == cell[5].innerHTML)) { return cell[3].innerHTML; }
-    if((cell[6].innerHTML == cell[7].innerHTML) && (cell[7].innerHTML == cell[8].innerHTML)) { return cell[6].innerHTML; }
-    if((cell[0].innerHTML == cell[3].innerHTML) && (cell[3].innerHTML == cell[6].innerHTML)) { return cell[0].innerHTML; }
-    if((cell[1].innerHTML == cell[4].innerHTML) && (cell[4].innerHTML == cell[7].innerHTML)) { return cell[1].innerHTML; }
-    if((cell[2].innerHTML == cell[5].innerHTML) && (cell[5].innerHTML == cell[8].innerHTML)) { return cell[2].innerHTML; }
-    if((cell[6].innerHTML == cell[4].innerHTML) && (cell[4].innerHTML == cell[2].innerHTML)) { return cell[6].innerHTML; }
-    if((cell[0].innerHTML == cell[4].innerHTML) && (cell[4].innerHTML == cell[8].innerHTML)) { return cell[0].innerHTML; }
-    if(cell.every(function(element, id, array) { return (array[id].innerHTML != ""); })) { return "Draw"; }
-    return false;
+function Player(name, team) {
+    this._name = name;
+    this._team = team;
+    this._score = 0;
+}
+
+Player.prototype = {
+    get name(){
+        return this._name;
+    },
+    set name(newName){
+        if(newName != "") {
+            this._name = newName.normalize();
+        } else {
+            this._name = (this._team == '×') ? 'X' : 'O';
+        }
+    },
+    get score(){
+        return this._score;
+    },
+    get team(){
+        return this._team;
+    }
+};
+
+Player.prototype.incrementScore = function(increment) {
+    this._score += increment;
+};
+
+Player.prototype.resetScore = function() {
+    this._score = 0;
+};
+
+Player.prototype.clearMoveSet = function() {
+    this._winset = [];
+}
+
+var player_1 = new Player('X', '×');
+var player_2 = new Player('O', '○');
+var players = [player_1, player_2];
+
+function Game() {
+    this.board = new Array(9);
+}
+
+Game.prototype.clearBoard = function () {
+    this.board = new Array(9).fill(0);
+};
+
+Game.prototype.checkGameOver = function() {
+    if((this.board[0] == this.board[1]) && (this.board[1] == this.board[2])) { return this.board[0]; }
+    if((this.board[3] == this.board[4]) && (this.board[4] == this.board[5])) { return this.board[3]; }
+    if((this.board[6] == this.board[7]) && (this.board[7] == this.board[8])) { return this.board[6]; }
+    if((this.board[0] == this.board[3]) && (this.board[3] == this.board[6])) { return this.board[0]; }
+    if((this.board[1] == this.board[4]) && (this.board[4] == this.board[7])) { return this.board[1]; }
+    if((this.board[2] == this.board[5]) && (this.board[5] == this.board[8])) { return this.board[2]; }
+    if((this.board[6] == this.board[4]) && (this.board[4] == this.board[2])) { return this.board[6]; }
+    if((this.board[0] == this.board[4]) && (this.board[4] == this.board[8])) { return this.board[0]; }
+    if( this.board.every(function(element) { return (element != 0); })) { return "draw"; }
+
+    return "continue";
+};
+
+var game = new Game();
+
+function updateUI() {
+    document.getElementById("player1").innerHTML = player_1.name;
+    document.getElementById("player2").innerHTML = player_2.name;
+    document.getElementById("score1").innerHTML = player_1.score;
+    document.getElementById("score2").innerHTML = player_2.score;
+
+
+    Array.prototype.forEach.call(document.getElementsByClassName("flex-game-field"), function(element, id) {
+        element.innerHTML = (game.board[id] == 0) ? "" : game.board[id];
+    });
+
+    if(players[0].team == '×') {
+        document.getElementById("player1").parentNode.className = "flex-score-field text-primary";
+        document.getElementById("player2").parentNode.className = "flex-score-field text-muted";
+    } else {
+        document.getElementById("player2").parentNode.className = "flex-score-field text-primary";
+        document.getElementById("player1").parentNode.className = "flex-score-field text-muted";
+    }
+}
+
+function alertGameOver(player) {
+    var winner = document.getElementById("winner");
+    if (player) {
+        winner.innerHTML = player.name + " wins!";
+        winner.className = "modal-title text-center alert-success";
+    } else {
+        winner.innerHTML = "Draw";
+        winner.className = "modal-title text-center alert-warning";
+    }
+
+    $('#resultModal').modal('show');
+    game.clearBoard();
 }
 
 document.body.onload = function() {
 
     addEvent(document.getElementById("newGame"), "click", function() {
-        clearGameBoard(true);
-        var playername1 = document.getElementById("playername1").value;
-        var playername2 = document.getElementById("playername2").value;
-        if( (playername1 != '') && (playername2 != '') && (playername1 != playername2) ) {
-            player1.innerHTML = document.getElementById("playername1").value;
-            player2.innerHTML = document.getElementById("playername2").value;
-        }
+        game.clearBoard();
+
+        player_1.name = document.getElementById("playername1").value;
+        player_1.resetScore();
+        player_1.clearMoveSet();
+
+        player_2.name = document.getElementById("playername2").value;
+        player_2.resetScore();
+        player_2.clearMoveSet();
+
+        updateUI();
     });
 
     addEvent(document.getElementById("game_board"), "click", function(event) {
         if(event.target && event.target.className == 'flex-game-field') {
-            if(!document.getElementById(event.target.id).innerHTML) {
-                var curentMove = steps.pop();
-                steps.unshift(curentMove);
-                if(curentMove == '×') {
-                    player2.className = "text-primary";
-                    player1.className = "text-muted";
-                } else {
-                    player1.className = "text-primary";
-                    player2.className = "text-muted";
+            if(event.target.innerHTML == "") {
+                game.board[event.target.id.charAt(11)] = players[0].team;
+                switch (game.checkGameOver()) {
+                    case '×':
+                        player_1.incrementScore(2);
+                        alertGameOver(player_1);
+                        break;
+                    case '○':
+                        player_2.incrementScore(2);
+                        alertGameOver(player_2);
+                        break;
+                    case 'draw':
+                        player_1.incrementScore(1);
+                        player_2.incrementScore(1);
+                        alertGameOver();
+                        break;
+                    default:
+                        players.unshift(players.pop());
                 }
-                document.getElementById(event.target.id).innerHTML = curentMove;
-                var isVictory = checkVictory();
-                if(isVictory != "") {
-                    switch (isVictory) {
-                        case '×':
-                            score1 += 2;
-                            winner.innerHTML = player1.innerHTML + " wins!";
-                            winner.className = winner.className + " alert-success";
-                            break;
-                        case '○':
-                            score2 += 2;
-                            winner.innerHTML = player2.innerHTML + " wins!";
-                            winner.className = winner.className + " alert-success";
-                            break;
-                        default:
-                            score1 += 1;
-                            score2 += 1;
-                            winner.innerHTML = "Draw";
-                            winner.className = winner.className + " alert-warning";
-                    }
-                    document.getElementById("score1").innerHTML = score1;
-                    document.getElementById("score2").innerHTML = score2;
-                    $('#resultModal').modal('show');
-                    clearGameBoard(false);
-                }
+
+                updateUI();
             }
         }
     });
 
     $('#newGameModal').modal('show');
-}
+};
 
