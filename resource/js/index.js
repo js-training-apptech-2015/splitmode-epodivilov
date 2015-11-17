@@ -11,7 +11,6 @@ function Player(name, team) {
     this._team = team;
     this._score = 0;
 }
-
 Player.prototype = {
     get name(){
         return this._name;
@@ -111,6 +110,7 @@ Game.prototype.checkGameOver = function() {
 
     return "continue";
 };
+Game.prototype.constructor = Game;
 
 var game = new Game();
 var player_1, player_2;

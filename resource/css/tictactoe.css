@@ -75,4 +75,6 @@ body {
     align-items: center;
 }
 
-.top-buffer { margin-top:20px; }
+.top-buffer {
+    margin-top:20px;
+}
