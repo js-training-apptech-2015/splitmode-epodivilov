@@ -49,25 +49,53 @@
             </div>
             <div class="modal-body">
                 <!-- my form-->
-                <div class="row">
-                    <form action="#">
-                        <div class="col-xs-6">
-                            <div class="form-group">
-                                <label for="playername1" class="text-center">Player from X team</label>
-                                <input type="text" class="form-control" id="playername1" placeholder="Player name" value="" tabindex=1>
+                <!--<div class="row">-->
+                    <div class="tabbable"> <!-- Only required for left/right tabs -->
+                        <ul id="gamemode" class="nav nav-tabs">
+                            <li class="active"><a href="#singleplayer" data-toggle="tab">Singleplayer</a></li>
+                            <li><a href="#multiplayer" data-toggle="tab">Multiplayer</a></li>
+                        </ul>
+                        <div class="tab-content row top-buffer">
+                            <div class="tab-pane active" id="singleplayer">
+                                <form action="#">
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="playername1" class="text-center">Player from X team</label>
+                                            <input type="text" class="form-control" id="playername" placeholder="Player name" value="" tabindex=1>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="playername2" class="text-center">Player from O team</label>
+                                            <input type="text" class="form-control" id="computername" placeholder="Player name"  value="Computer" disabled>
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
-                            <button type="button" class="btn btn-default pull-left" data-dismiss="modal" tabindex=4>Close</button>
-                        </div>
-                        <div class="col-xs-6">
-                            <div class="form-group">
-                                <label for="playername2" class="text-center">Player from O team</label>
-                                <input type="text" class="form-control" id="playername2" placeholder="Player name"  value="" tabindex=2>
+                            <div class="tab-pane" id="multiplayer">
+                                    <form action="#">
+                                        <div class="col-xs-6">
+                                            <div class="form-group">
+                                                <label for="playername1" class="text-center">Player from X team</label>
+                                                <input type="text" class="form-control" id="playername1" placeholder="Player name" value="" tabindex=1>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-6">
+                                            <div class="form-group">
+                                                <label for="playername2" class="text-center">Player from O team</label>
+                                                <input type="text" class="form-control" id="playername2" placeholder="Player name"  value="" tabindex=2>
+                                            </div>
+                                        </div>
+                                    </form>
                             </div>
-                            <button id="newGame" type="button" class="btn btn-primary pull-right" data-dismiss="modal" tabindex=3>New game</button>
                         </div>
-                    </form>
-                </div>
+                    </div>
+                <!--</div>-->
                 <!-- my form-->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default pull-left" data-dismiss="modal" tabindex=4>Close</button>
+                <button id="newGame" type="button" class="btn btn-primary pull-right" data-dismiss="modal" tabindex=3>New game</button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->

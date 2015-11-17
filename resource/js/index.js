@@ -30,31 +30,74 @@ Player.prototype = {
         return this._team;
     }
 };
-
 Player.prototype.incrementScore = function(increment) {
     this._score += increment;
 };
-
 Player.prototype.resetScore = function() {
     this._score = 0;
 };
+Player.prototype.constructor = Player;
 
-Player.prototype.clearMoveSet = function() {
-    this._winset = [];
+function PlayerAI() {
+    Player.call(this, 'Computer', '○');
+    Object.defineProperty(this, 'name', {
+        get: function(){
+            return this._name;
+        },
+        set: function(newName){
+            console.log("Error!");
+        }
+
+    });
 }
-
-var player_1 = new Player('X', '×');
-var player_2 = new Player('O', '○');
-var players = [player_1, player_2];
+PlayerAI.prototype = new Player;
+PlayerAI.prototype.move = function(gameField) {
+    if(gameField[0] == 0 && ((gameField[1] == '×' && gameField[2] == '×') || (gameField[3] == '×' && gameField[6] == '×') || (gameField[4] == '×' && gameField[8] == '×'))){
+        gameField[0] = '○';
+    } else if(gameField[1] == 0 && ((gameField[0] == '×' && gameField[2] == '×') || (gameField[4] == '×' && gameField[7] == '×'))) {
+        gameField[1] = '○';
+    } else if(gameField[2] == 0 && ((gameField[0] == '×' && gameField[1] == '×') || (gameField[6] == '×' && gameField[4] == '×') || (gameField[5] == '×' && gameField[8] == '×'))) {
+        gameField[2] = '○';
+    } else if(gameField[3] == 0 && ((gameField[4] == '×' && gameField[5] == '×') || (gameField[0] == '×' && gameField[6] == '×'))){
+        gameField[3] = '○';
+    } else if(gameField[4] == 0 && ((gameField[0] == '×' && gameField[8] == '×') || (gameField[1] == '×' && gameField[7] == '×') || (gameField[2] == '×' && gameField[6] == '×') || (gameField[3] == '×' && gameField[5] == '×'))) {
+        gameField[4] = '○';
+    } else if(gameField[5] == 0 && ((gameField[2] == '×' && gameField[8] == '×') || (gameField[3] == '×' && gameField[4] == '×'))) {
+        gameField[5] = '○';
+    } else if(gameField[6] == 0 && ((gameField[7] == '×' && gameField[8] == '×') || (gameField[0] == '×' && gameField[3] == '×') || (gameField[2] == '×' && gameField[4] == '×'))){
+        gameField[6] = '○';
+    } else if(gameField[7] == 0 && ((gameField[1] == '×' && gameField[4] == '×') || (gameField[6] == '×' && gameField[7] == '×'))) {
+        gameField[7] = '○';
+    } else if(gameField[8] == 0 && ((gameField[6] == '×' && gameField[7] == '×') || (gameField[2] == '×' && gameField[5] == '×') || (gameField[0] == '×' && gameField[4] == '×'))) {
+        gameField[8] = '○';
+    } else {
+        switch (0) {
+            case gameField[4]:
+                gameField[4] = '○';
+                break;
+            case gameField[0]:
+                gameField[0] = '○';
+                break;
+            case gameField[8]:
+                gameField[8] = '○';
+                break;
+            case gameField[7]:
+                gameField[7] = '○';
+                break;
+            case gameField[3]:
+                gameField[3] = '○';
+                break;
+        }
+    }
+};
+PlayerAI.prototype.constructor = PlayerAI;
 
 function Game() {
     this.board = new Array(9);
 }
-
 Game.prototype.clearBoard = function () {
     this.board = new Array(9).fill(0);
 };
-
 Game.prototype.checkGameOver = function() {
     if((this.board[0] == this.board[1]) && (this.board[1] == this.board[2])) { return this.board[0]; }
     if((this.board[3] == this.board[4]) && (this.board[4] == this.board[5])) { return this.board[3]; }
@@ -70,6 +113,8 @@ Game.prototype.checkGameOver = function() {
 };
 
 var game = new Game();
+var player_1, player_2;
+var players = [];
 
 function updateUI() {
     document.getElementById("player1").innerHTML = player_1.name;
@@ -110,13 +155,23 @@ document.body.onload = function() {
     addEvent(document.getElementById("newGame"), "click", function() {
         game.clearBoard();
 
-        player_1.name = document.getElementById("playername1").value;
+        player_1 = new Player('X', '×');
+        player_1.name = document.getElementById("playername").value;
         player_1.resetScore();
-        player_1.clearMoveSet();
 
-        player_2.name = document.getElementById("playername2").value;
+        switch ($('.nav-tabs .active').text()) {
+            case 'Singleplayer':
+                player_2 = new PlayerAI();
+                break;
+            case 'Multiplayer':
+                player_2 = new Player('O', '○');
+                player_1.name = document.getElementById("playername1").value;
+                player_2.name = document.getElementById("playername2").value;
+                break;
+        }
         player_2.resetScore();
-        player_2.clearMoveSet();
+
+        players = [player_1, player_2];
 
         updateUI();
     });
@@ -125,6 +180,13 @@ document.body.onload = function() {
         if(event.target && event.target.className == 'flex-game-field') {
             if(event.target.innerHTML == "") {
                 game.board[event.target.id.charAt(11)] = players[0].team;
+
+                if(player_2 instanceof PlayerAI) {
+                    player_2.move(game.board);
+                } else {
+                    players.unshift(players.pop());
+                }
+
                 switch (game.checkGameOver()) {
                     case '×':
                         player_1.incrementScore(2);
@@ -139,10 +201,7 @@ document.body.onload = function() {
                         player_2.incrementScore(1);
                         alertGameOver();
                         break;
-                    default:
-                        players.unshift(players.pop());
                 }
-
                 updateUI();
             }
         }
