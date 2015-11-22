@@ -1,5 +1,4 @@
-function Player(id) {
-    this._id = id;
+function Player() {
     this._score = 0;
     this._field = [0, 0, 0, 0, 0, 0, 0, 0, 0];
 }
@@ -12,12 +11,16 @@ Player.prototype = {
         return this._score;
     },
     get field(){
-        return this._field.join("");
+        return this._field;
     }
 };
 
-Player.prototype.playerTurn = function () {
+Player.prototype.resetScore = function () {
+    this._score = 0;
+};
 
+Player.prototype.clearField = function () {
+    this._field = [0, 0, 0, 0, 0, 0, 0, 0, 0];
 };
 
 Player.prototype.constructor = Player;
