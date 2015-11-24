@@ -41,23 +41,23 @@ function App() {
                 this._ui.scoreBoard1.className = "flex-score-field text-muted";
                 break;
             case 'first-player-wins':
-                this.showWinAlert("Player 1 win!", 1);
                 player1.incrementScore(2);
                 game.fieldPlayer1 = [0,0,0,0,0,0,0,0,0];
                 game.fieldPlayer2 = [0,0,0,0,0,0,0,0,0];
+                this.showWinAlert("Player 1 win!", 1);
                 break;
             case 'second-player-wins':
-                this.showWinAlert("Player 2 win!", 2);
                 player2.incrementScore(2);
                 game.fieldPlayer1 = [0,0,0,0,0,0,0,0,0];
                 game.fieldPlayer2 = [0,0,0,0,0,0,0,0,0];
+                this.showWinAlert("Player 2 win!", 2);
                 break;
             case 'tie':
-                this.showWinAlert("Tie!", 0);
                 player1.incrementScore(1);
                 player2.incrementScore(1);
                 game.fieldPlayer1 = [0,0,0,0,0,0,0,0,0];
                 game.fieldPlayer2 = [0,0,0,0,0,0,0,0,0];
+                this.showWinAlert("Tie!", 0);
                 break;
         }
 
