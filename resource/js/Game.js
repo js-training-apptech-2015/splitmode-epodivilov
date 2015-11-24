@@ -61,13 +61,15 @@ Game.netGame = function () {
             xmlhttp.open("POST", gameObj.url, true);
             xmlhttp.setRequestHeader('Content-Type', 'application/json');
 
-            xmlhttp.onload = function() {
-                if (xmlhttp.status == 201) {
-                    resolve(xmlhttp.responseText);
-                } else {
-                    var error = new Error(this.statusText);
-                    error.code = this.status;
-                    reject(error);
+            xmlhttp.onreadystatechange = function() {
+                if (xmlhttp.readyState == 4) {
+                    if (xmlhttp.status == 201) {
+                        resolve(xmlhttp.responseText);
+                    } else {
+                        var error = new Error(xmlhttp.statusText);
+                        error.code = xmlhttp.status;
+                        reject(error);
+                    }
                 }
             };
 
@@ -83,13 +85,15 @@ Game.netGame = function () {
             xmlhttp.open("GET", url, true);
             xmlhttp.setRequestHeader('Content-Type', 'application/json');
 
-            xmlhttp.onload = function() {
-                if (xmlhttp.status == 200) {
-                    resolve(xmlhttp.responseText);
-                } else {
-                    var error = new Error(this.statusText);
-                    error.code = this.status;
-                    reject(error);
+            xmlhttp.onreadystatechange = function() {
+                if (xmlhttp.readyState == 4) {
+                    if (xmlhttp.status == 200) {
+                        resolve(xmlhttp.responseText);
+                    } else {
+                        var error = new Error(xmlhttp.statusText);
+                        error.code = xmlhttp.status;
+                        reject(error);
+                    }
                 }
             };
 
@@ -105,13 +109,15 @@ Game.netGame = function () {
             xmlhttp.open("GET", url, true);
             xmlhttp.setRequestHeader('Content-Type', 'application/json');
 
-            xmlhttp.onload = function() {
-                if (xmlhttp.status == 200) {
-                    resolve(xmlhttp.responseText);
-                } else {
-                    var error = new Error(this.statusText);
-                    error.code = this.status;
-                    reject(error);
+            xmlhttp.onreadystatechange = function() {
+                if (xmlhttp.readyState == 4) {
+                    if (xmlhttp.status == 200) {
+                        resolve(xmlhttp.responseText);
+                    } else {
+                        var error = new Error(xmlhttp.statusText);
+                        error.code = xmlhttp.status;
+                        reject(error);
+                    }
                 }
             };
 
@@ -121,21 +127,24 @@ Game.netGame = function () {
 
     gameObj.onTurn = function (player, position) {
         return new Promise(function (resolve, reject) {
-            var url = 'http://aqueous-ocean-2864.herokuapp.com/games/' + gameObject.token;
             var xmlhttp = new XMLHttpRequest();
+            var url = gameObj._url + '/' + gameObj.token;
+
             xmlhttp.onreadystatechange = function() {
                 if (xmlhttp.readyState == 4) {
-                    var myArr = JSON.parse(xmlhttp.responseText);
-                    document.getElementById('result').innerHTML = JSON.stringify(myArr);
-                    gameObject.state = myArr.state;
-                    //autoupdate = setTimeout(function(){
-                    //    updateGame();
-                    //}, 1000);
+                    if (xmlhttp.status == 200) {
+                        resolve(xmlhttp.responseText);
+                    } else {
+                        var error = new Error(xmlhttp.statusText);
+                        error.code = xmlhttp.status;
+                        reject(error);
+                    }
                 }
             };
+
             xmlhttp.open("PUT", url, true);
             xmlhttp.setRequestHeader('Content-Type', 'application/json');
-            xmlhttp.send(JSON.stringify({player:id_player, position:pos}));
+            xmlhttp.send(JSON.stringify({player:player.id, position:Number(position)}));
         });
     };
 
