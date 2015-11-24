@@ -1,17 +1,21 @@
-function Player() {
+function Player(id) {
+    this._id = id;
     this._score = 0;
-    this._field = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+    this._name = 'player_' + id;
 }
 
 Player.prototype = {
-    get id(){
+    get id() {
         return this._id;
     },
-    get score(){
+    get score() {
         return this._score;
     },
-    get field(){
-        return this._field;
+    get name() {
+        return this._name;
+    },
+    set name(string) {
+        this._name = string || ('player_' + this._id);
     }
 };
 
@@ -19,8 +23,8 @@ Player.prototype.resetScore = function () {
     this._score = 0;
 };
 
-Player.prototype.clearField = function () {
-    this._field = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+Player.prototype.incrementScore = function (increment) {
+    this._score += increment;
 };
 
 Player.prototype.constructor = Player;

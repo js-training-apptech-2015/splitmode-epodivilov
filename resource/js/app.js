@@ -6,16 +6,12 @@ function addEvent(element, eventName, callback) {
     }
 }
 
-function createBinaryString (nMask) {
-    // nMask must be between -2147483648 and 2147483647
-    for (var nFlag = 0, nShifted = nMask, sMask = ""; nFlag < 32;
-         nFlag++, sMask += String(nShifted >>> 31), nShifted <<= 1);
-    return sMask.substring(sMask.length-9);
-}
-
 function App() {
-    this._game = new Game();
+    this._game = null;
     this._ui = {};
+
+    this._player1 = null;
+    this._player2 = null;
 
     this.initUI = function () {
         this._ui.gameBoard      = document.getElementsByClassName('flex-game-field');
@@ -29,8 +25,8 @@ function App() {
     };
 
     this.updateUI = function () {
-        var player1 = this._game._player1;
-        var player2 = this._game._player2;
+        var player1 = this._player1;
+        var player2 = this._player2;
 
         Array.prototype.forEach.call(this._ui.gameBoard, function(element, id) {
             if(player1.field[8-id] != 0) {
@@ -80,45 +76,32 @@ function App() {
 document.body.onload = function () {
     var app = new App();
 
-    var newSinglGame = document.getElementById('newSinglGame'),
-        newHotseatGame = document.getElementById('newHotseatGame'),
-        newNetGame = document.getElementById('newNetGame'),
-        joinNetGame = document.getElementById('joinNetGame');
+    var newSinglGame = document.getElementById('btn-singl-game'),
+        newHotseatGame = document.getElementById('btn-hotseat-game'),
+        newNetGame = document.getElementById('btn-new-net-game'),
+        joinNetGame = document.getElementById('btn-join-net-game');
 
     app.initUI();
     app.updateUI();
 
-    addEvent(newNetGame, 'click', function () {
-        app._game.newNetGame();
+    addEvent(newNetGame, 'click', function (event) {
+        $('#pleaseWaitDialog').modal('show');
+        app._game = new Game(2);
+        app._game.newGame();
     });
 
-    addEvent(joinNetGame, 'click', function () {
-        var token = document.getElementById('gameToken').value;
+    addEvent(joinNetGame, 'click', function (event) {
+        $('#pleaseWaitDialog').modal('show');
+        app._game = new Game(3);
+        var token = document.getElementById('input-token-game').value;
         app._game.joinNetGame(token);
     });
 
-    addEvent(document.getElementById("game_board"), 'click', function () {
-        if(event.target && event.target.innerHTML == '') {
-            switch (app._game.state) {
-                case 'first-player-turn':
-                    if(app._game.player == 1) {
-                        app._game.playerTurn(event.target.id.charAt(11));
-                    } else {
-                        app._game.checkNetState();
-                    }
-                    break;
-                case 'second-player-turn':
-                    if(app._game.player == 2) {
-                        app._game.playerTurn(event.target.id.charAt(11));
-                    } else {
-                        app._game.checkNetState();
-                    }
-                    break;
+    addEvent(document.getElementById("game_board"), "click", function(event) {
+        if(event.target && event.target.className == 'flex-game-field') {
+            alert(event.target.id);
+            if (event.target.innerHTML == "") {
             }
-
-            app.updateUI();
         }
     });
-
-
 };
