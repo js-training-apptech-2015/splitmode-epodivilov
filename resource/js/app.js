@@ -27,11 +27,12 @@ function App() {
     this.updateUI = function () {
         var player1 = this._player1;
         var player2 = this._player2;
+        var game = this._game;
 
         Array.prototype.forEach.call(this._ui.gameBoard, function(element, id) {
-            if(player1.field[8-id] != 0) {
+            if(game.fieldPlayer1[8-id] != 0) {
                 element.innerHTML = '×';
-            } else if(player2.field[8-id] != 0) {
+            } else if(game.fieldPlayer2[8-id] != 0) {
                 element.innerHTML = '○';
             } else {
                 element.innerHTML = '';
@@ -82,24 +83,67 @@ document.body.onload = function () {
         joinNetGame = document.getElementById('btn-join-net-game');
 
     app.initUI();
-    app.updateUI();
+    app._player1 = new Player(1);
+
+    addEvent(newSinglGame, 'click', function (event) {
+
+    });
+
+    addEvent(newHotseatGame, 'click', function (event) {
+
+    });
 
     addEvent(newNetGame, 'click', function (event) {
         $('#pleaseWaitDialog').modal('show');
-        app._game = new Game(2);
-        app._game.newGame();
+        app._player2 = new Player(2);
+        app._game = Game.netGame();
+        app._game.newGame()
+            .then(function (response) {
+                return JSON.parse(response);
+            })
+            .then(function (response) {
+                app._game.token = response.token;
+                app._game.state = response.state;
+                app._game.fieldPlayer1 = response.field1;
+                app._game.fieldPlayer2 = response.field2;
+                document.getElementById("tokenLabel").value = response.token;
+                $('#pleaseWaitDialog').modal('hide');
+                $('#creatingNewGame').modal('show');
+                return 'ok';
+            })
+            .catch(function (error) {
+                $('#pleaseWaitDialog').modal('hide');
+                console.log(error);
+            })
+            .then(app.updateUI());
     });
 
     addEvent(joinNetGame, 'click', function (event) {
         $('#pleaseWaitDialog').modal('show');
-        app._game = new Game(3);
+        app._player2 = new Player(2);
+        app._game = Game.netGame();
         var token = document.getElementById('input-token-game').value;
-        app._game.joinNetGame(token);
+        app._game.joinGame(token)
+            .then(function (response) {
+                return JSON.parse(response);
+            })
+            .then(function (response) {
+                app._game.token = response.token;
+                app._game.state = response.state;
+                app._game.fieldPlayer1 = response.field1;
+                app._game.fieldPlayer2 = response.field2;
+                $('#pleaseWaitDialog').modal('hide');
+                return 'ok';
+            })
+            .catch(function (error) {
+                $('#pleaseWaitDialog').modal('hide');
+                console.log(error);
+            })
+            .then(app.updateUI());
     });
 
     addEvent(document.getElementById("game_board"), "click", function(event) {
         if(event.target && event.target.className == 'flex-game-field') {
-            alert(event.target.id);
             if (event.target.innerHTML == "") {
             }
         }

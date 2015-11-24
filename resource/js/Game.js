@@ -47,77 +47,97 @@ Game.prototype = {
     }
 };
 
-Game.prototype.newGame = function () {
-    switch (this._type) {
-        case 0:
-            console.log("Singlplayer game");
-            break;
-        case 1:
-            console.log("Hotseat game");
-            break;
-        case 2:
-            console.log("New network game");
-            this.newNetGame();
-            break;
-        case 3:
-            console.log("Join network game");
-            break;
-    }
-};
-
-Game.prototype.newNetGame = function () {
-    var xmlhttp = new XMLHttpRequest();
-    var gameObject = this;
-
-    xmlhttp.open("POST", this.url, true);
-    xmlhttp.setRequestHeader('Content-Type', 'application/json');
-
-    xmlhttp.onreadystatechange = function() {
-        if (xmlhttp.readyState == 4 && xmlhttp.status == 201) {
-            var myArr = JSON.parse(xmlhttp.responseText);
-            gameObject.token = myArr.token;
-            gameObject.state = myArr.state;
-            gameObject.fieldPlayer1 = myArr.field1;
-            gameObject.fieldPlayer2 = myArr.field2;
-            document.getElementById("tokenLabel").value = myArr.token;
-            $('#pleaseWaitDialog').modal('hide');
-            $('#creatingNewGame').modal('show');
-        } else {
-            $('#pleaseWaitDialog').modal('hide');
-            alert('Error');
-        }
-    };
-
-    xmlhttp.send(JSON.stringify({type:0}));
-};
-
-Game.prototype.joinNetGame = function (token) {
-    var xmlhttp = new XMLHttpRequest();
-    var gameObject = this;
-    var url = gameObject._url + '/' + token;
-
-    xmlhttp.open("GET", url, true);
-    xmlhttp.setRequestHeader('Content-Type', 'application/json');
-
-    xmlhttp.onreadystatechange = function() {
-        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-            var myArr = JSON.parse(xmlhttp.responseText);
-            gameObject.token = myArr.token;
-            gameObject.state = myArr.state;
-            gameObject.fieldPlayer1 = myArr.field1;
-            gameObject.fieldPlayer2 = myArr.field2;
-            $('#pleaseWaitDialog').modal('hide');
-        } else {
-            $('#pleaseWaitDialog').modal('hide');
-            alert('Error');
-        }
-    };
-
-
-    xmlhttp.send();
-};
-
-
-
+Game.prototype.newGame = null;
 
 Game.prototype.constructor = Game;
+
+Game.netGame = function () {
+    var gameObj = new Game();
+
+    gameObj.newGame = function () {
+        return new Promise(function (resolve, reject) {
+            var xmlhttp = new XMLHttpRequest();
+
+            xmlhttp.open("POST", gameObj.url, true);
+            xmlhttp.setRequestHeader('Content-Type', 'application/json');
+
+            xmlhttp.onload = function() {
+                if (xmlhttp.status == 201) {
+                    resolve(xmlhttp.responseText);
+                } else {
+                    var error = new Error(this.statusText);
+                    error.code = this.status;
+                    reject(error);
+                }
+            };
+
+            xmlhttp.send(JSON.stringify({type:0}))
+        });
+    };
+
+    gameObj.joinGame = function (token) {
+        return new Promise(function (resolve, reject) {
+            var xmlhttp = new XMLHttpRequest();
+            var url = gameObj._url + '/' + token;
+
+            xmlhttp.open("GET", url, true);
+            xmlhttp.setRequestHeader('Content-Type', 'application/json');
+
+            xmlhttp.onload = function() {
+                if (xmlhttp.status == 200) {
+                    resolve(xmlhttp.responseText);
+                } else {
+                    var error = new Error(this.statusText);
+                    error.code = this.status;
+                    reject(error);
+                }
+            };
+
+            xmlhttp.send();
+        });
+    };
+
+    gameObj.checkState = function () {
+        return new Promise(function (resolve, reject) {
+            var xmlhttp = new XMLHttpRequest();
+            var url = gameObj._url + '/' + gameObj.token;
+
+            xmlhttp.open("GET", url, true);
+            xmlhttp.setRequestHeader('Content-Type', 'application/json');
+
+            xmlhttp.onload = function() {
+                if (xmlhttp.status == 200) {
+                    resolve(xmlhttp.responseText);
+                } else {
+                    var error = new Error(this.statusText);
+                    error.code = this.status;
+                    reject(error);
+                }
+            };
+
+            xmlhttp.send();
+        });
+    };
+
+    gameObj.onTurn = function (player, position) {
+        return new Promise(function (resolve, reject) {
+            var url = 'http://aqueous-ocean-2864.herokuapp.com/games/' + gameObject.token;
+            var xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = function() {
+                if (xmlhttp.readyState == 4) {
+                    var myArr = JSON.parse(xmlhttp.responseText);
+                    document.getElementById('result').innerHTML = JSON.stringify(myArr);
+                    gameObject.state = myArr.state;
+                    //autoupdate = setTimeout(function(){
+                    //    updateGame();
+                    //}, 1000);
+                }
+            };
+            xmlhttp.open("PUT", url, true);
+            xmlhttp.setRequestHeader('Content-Type', 'application/json');
+            xmlhttp.send(JSON.stringify({player:id_player, position:pos}));
+        });
+    };
+
+    return gameObj;
+};
