@@ -129,6 +129,11 @@ function App() {
 }
 
 document.body.onload = function () {
+
+    $('.navbar-collapse').click('li', function() {
+        $('.navbar-collapse').collapse('hide');
+    });
+
     var app = new App();
 
     app._player1 = new Player(1);
@@ -173,6 +178,59 @@ document.body.onload = function () {
                 $('#pleaseWaitDialog').modal('hide');
                 app.updateUI();
             });
+
+        addEvent(gameBoard, "click", function(event) {
+            if(event.target && event.target.className == 'flex-game-field') {
+                if (event.target.innerHTML == "") {
+                    var cell = event.target.id.charAt(11);
+                    $('#pleaseWaitDialog').modal('show');
+
+                    if((app._game.state == 'first-player-turn') && (app._player1.id == 1)) {
+                        console.log("player 1 turn on " + cell);
+                        app._game.onTurn(app._player1, cell)
+                            .then(function (response) {
+                                return JSON.parse(response);
+                            })
+                            .then(function (response) {
+                                app._game.token = response.token;
+                                app._game.state = response.state;
+                                app._game.fieldPlayer1 = response.field1;
+                                app._game.fieldPlayer2 = response.field2;
+                                return 'ok';
+                            })
+                            .catch(function (error) {
+                                console.log(error);
+                            })
+                            .then(function () {
+                                $('#pleaseWaitDialog').modal('hide');
+                                app.updateUI();
+                            });
+                    } else if ((app._game.state == 'second-player-turn') && (app._player1.id == 2)) {
+                        console.log("player 2 turn on " + cell);
+                        app._game.onTurn(app._player1, cell)
+                            .then(function (response) {
+                                return JSON.parse(response);
+                            })
+                            .then(function (response) {
+                                app._game.token = response.token;
+                                app._game.state = response.state;
+                                app._game.fieldPlayer1 = response.field1;
+                                app._game.fieldPlayer2 = response.field2;
+                                return 'ok';
+                            })
+                            .catch(function (error) {
+                                console.log(error);
+                            })
+                            .then(function () {
+                                $('#pleaseWaitDialog').modal('hide');
+                                app.updateUI();
+                            });
+                    } else {
+                        app.updateUI();
+                    }
+                }
+            }
+        });
     });
 
     addEvent(joinNetGame, 'click', function (event) {
@@ -200,58 +258,60 @@ document.body.onload = function () {
                 app.updateUI();
                 app.autoupdate('on');
             });
-    });
 
-    addEvent(gameBoard, "click", function(event) {
-        if(event.target && event.target.className == 'flex-game-field') {
-            if (event.target.innerHTML == "") {
-                var cell = event.target.id.charAt(11);
-                $('#pleaseWaitDialog').modal('show');
+        addEvent(gameBoard, "click", function(event) {
+            if(event.target && event.target.className == 'flex-game-field') {
+                if (event.target.innerHTML == "") {
+                    var cell = event.target.id.charAt(11);
+                    $('#pleaseWaitDialog').modal('show');
 
-                if((app._game.state == 'first-player-turn') && (app._player1.id == 1)) {
-                    console.log("player 1 turn on " + cell);
-                    app._game.onTurn(app._player1, cell)
-                        .then(function (response) {
-                            return JSON.parse(response);
-                        })
-                        .then(function (response) {
-                            app._game.token = response.token;
-                            app._game.state = response.state;
-                            app._game.fieldPlayer1 = response.field1;
-                            app._game.fieldPlayer2 = response.field2;
-                            return 'ok';
-                        })
-                        .catch(function (error) {
-                            console.log(error);
-                        })
-                        .then(function () {
-                            $('#pleaseWaitDialog').modal('hide');
-                            app.updateUI();
-                        });
-                } else if ((app._game.state == 'second-player-turn') && (app._player1.id == 2)) {
-                    console.log("player 2 turn on " + cell);
-                    app._game.onTurn(app._player1, cell)
-                        .then(function (response) {
-                            return JSON.parse(response);
-                        })
-                        .then(function (response) {
-                            app._game.token = response.token;
-                            app._game.state = response.state;
-                            app._game.fieldPlayer1 = response.field1;
-                            app._game.fieldPlayer2 = response.field2;
-                            return 'ok';
-                        })
-                        .catch(function (error) {
-                            console.log(error);
-                        })
-                        .then(function () {
-                            $('#pleaseWaitDialog').modal('hide');
-                            app.updateUI();
-                        });
-                } else {
-                    app.updateUI();
+                    if((app._game.state == 'first-player-turn') && (app._player1.id == 1)) {
+                        console.log("player 1 turn on " + cell);
+                        app._game.onTurn(app._player1, cell)
+                            .then(function (response) {
+                                return JSON.parse(response);
+                            })
+                            .then(function (response) {
+                                app._game.token = response.token;
+                                app._game.state = response.state;
+                                app._game.fieldPlayer1 = response.field1;
+                                app._game.fieldPlayer2 = response.field2;
+                                return 'ok';
+                            })
+                            .catch(function (error) {
+                                console.log(error);
+                            })
+                            .then(function () {
+                                $('#pleaseWaitDialog').modal('hide');
+                                app.updateUI();
+                            });
+                    } else if ((app._game.state == 'second-player-turn') && (app._player1.id == 2)) {
+                        console.log("player 2 turn on " + cell);
+                        app._game.onTurn(app._player1, cell)
+                            .then(function (response) {
+                                return JSON.parse(response);
+                            })
+                            .then(function (response) {
+                                app._game.token = response.token;
+                                app._game.state = response.state;
+                                app._game.fieldPlayer1 = response.field1;
+                                app._game.fieldPlayer2 = response.field2;
+                                return 'ok';
+                            })
+                            .catch(function (error) {
+                                console.log(error);
+                            })
+                            .then(function () {
+                                $('#pleaseWaitDialog').modal('hide');
+                                app.updateUI();
+                            });
+                    } else {
+                        app.updateUI();
+                    }
                 }
             }
-        }
+        });
     });
+
+
 };
