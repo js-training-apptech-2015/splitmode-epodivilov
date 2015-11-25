@@ -121,7 +121,7 @@ function App() {
                         $('#pleaseWaitDialog').modal('hide');
                         app.updateUI();
                     });
-            }, 2000);
+            }, 1000);
         } else if(state == 'off') {
             clearInterval(app._updater);
         }
@@ -152,7 +152,40 @@ document.body.onload = function () {
     });
 
     addEvent(newHotseatGame, 'click', function (event) {
+        $('#pleaseWaitDialog').modal('show');
+        app._game = Game.hotseatGame();
+        app._game.newGame()
+            .then(function () {
+                $('#pleaseWaitDialog').modal('hide');
+                app.updateUI();
+            });
 
+        addEvent(gameBoard, "click", function(event) {
+            if(event.target && event.target.className == 'flex-game-field') {
+                if (event.target.innerHTML == "") {
+                    var cell = event.target.id.charAt(11);
+                    $('#pleaseWaitDialog').modal('show');
+                    if(app._game.state == 'first-player-turn') {
+                        app._game.state = 'second-player-turn';
+                        app._game.onTurn(app._player1, cell)
+                            .then(function () {
+                                $('#pleaseWaitDialog').modal('hide');
+                                app.updateUI();
+                            });
+                    } else if(app._game.state == 'second-player-turn') {
+                        app._game.state = 'first-player-turn';
+                        app._game.onTurn(app._player2, cell)
+                            .then(function () {
+                                $('#pleaseWaitDialog').modal('hide');
+                                app.updateUI();
+                            });
+                    }
+                    app._game.checkState();
+                    console.log(app._game.fieldPlayer1);
+                    console.log(app._game.fieldPlayer2);
+                }
+            }
+        });
     });
 
     addEvent(newNetGame, 'click', function (event) {

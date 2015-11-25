@@ -4,8 +4,11 @@ function createBinaryString (nMask) {
     return sMask.substring(sMask.length-9); //length 9 symbols
 }
 
-function Game(type, token) {
-    this._type = type;
+function checkWinCombinations() {
+
+}
+
+function Game(token) {
     this._token = token || 0;
     this._url = 'http://aqueous-ocean-2864.herokuapp.com/games';
 
@@ -46,8 +49,6 @@ Game.prototype = {
         this._fieldPlayer2 = createBinaryString(string).split("");
     }
 };
-
-Game.prototype.newGame = null;
 
 Game.prototype.constructor = Game;
 
@@ -145,6 +146,45 @@ Game.netGame = function () {
             xmlhttp.open("PUT", url, true);
             xmlhttp.setRequestHeader('Content-Type', 'application/json');
             xmlhttp.send(JSON.stringify({player:player.id, position:Number(position)}));
+        });
+    };
+
+    return gameObj;
+};
+
+Game.hotseatGame = function () {
+    var gameObj = new Game();
+
+    gameObj.newGame = function () {
+        gameObj.state = 'first-player-turn';
+        return Promise.resolve();
+    };
+
+    gameObj.checkState = function () {
+        return new Promise(function (resolve, reject) {
+            var response = {};
+            response.token = gameObj.token;
+            response.field1 = gameObj.fieldPlayer1;
+            response.field2 = gameObj.fieldPlayer2;
+            //if(true) {
+                response.state = gameObj.state;
+            //};
+            resolve(JSON.stringify(response));
+        });
+    };
+
+    gameObj.onTurn = function (player, position) {
+        return new Promise(function (resolve, reject) {
+            switch (player.id) {
+                case 1:
+                    gameObj._fieldPlayer1[8-position] = 1;
+                    resolve();
+                    break;
+                case 2:
+                    gameObj._fieldPlayer2[8-position] = 1;
+                    resolve();
+                    break;
+            }
         });
     };
 
