@@ -1,11 +1,3 @@
-function addEvent(element, eventName, callback) {
-    if (element.addEventListener) {
-        element.addEventListener(eventName, callback, false);
-    } else if (element.attachEvent) {
-        element.attachEvent("on" + eventName, callback);
-    }
-}
-
 function App() {
     this._game = null;
     this._ui = {};
@@ -32,47 +24,56 @@ function App() {
         var game = this._game;
         var app = this;
 
-        if((app._game.state == 'first-player-turn') && (app._player1.id == 1)) {
-            this.autoupdate('off');
-        } else if ((app._game.state == 'second-player-turn') && (app._player1.id == 2)) {
-            this.autoupdate('off');
-        } else if((app._game.state == 'first-player-wins')||(app._game.state == 'second-player-wins')||(app._game.state == 'tie')) {
-            this.autoupdate('off');
-        } else {
-            this.autoupdate('on');
-        }
-
         switch (game.state) {
-            case 'first-player-turn':
-                this._ui.scoreBoard1.className = "flex-score-field text-primary";
-                this._ui.scoreBoard2.className = "flex-score-field text-muted";
+            case 'first-player-turn': {
+                app._ui.scoreBoard1.className = "flex-score-field text-primary";
+                app._ui.scoreBoard2.className = "flex-score-field text-muted";
+                if (app._game.token > 2) {
+                    if (app._player1.id == 1) {
+                        app.autoupdate('off');
+                    } else {
+                        app.autoupdate('on');
+                    }
+                }
                 break;
-            case 'second-player-turn':
-                this._ui.scoreBoard2.className = "flex-score-field text-primary";
-                this._ui.scoreBoard1.className = "flex-score-field text-muted";
+            }
+            case 'second-player-turn': {
+                app._ui.scoreBoard2.className = "flex-score-field text-primary";
+                app._ui.scoreBoard1.className = "flex-score-field text-muted";
+                if (app._game.token > 2) {
+                    if(app._player1.id == 2) {
+                        app.autoupdate('off');
+                    } else {
+                        app.autoupdate('on');
+                    }
+                }
                 break;
-            case 'first-player-wins':
-                this.autoupdate('off');
+            }
+            case 'first-player-wins': {
+                app.autoupdate('off');
                 player1.incrementScore(2);
                 game.fieldPlayer1 = [0,0,0,0,0,0,0,0,0];
                 game.fieldPlayer2 = [0,0,0,0,0,0,0,0,0];
-                this.showWinAlert("Player 1 win!", 1);
+                app.showWinAlert("Player 1 win!", 1);
                 break;
-            case 'second-player-wins':
-                this.autoupdate('off');
+            }
+            case 'second-player-wins': {
+                app.autoupdate('off');
                 player2.incrementScore(2);
                 game.fieldPlayer1 = [0,0,0,0,0,0,0,0,0];
                 game.fieldPlayer2 = [0,0,0,0,0,0,0,0,0];
-                this.showWinAlert("Player 2 win!", 2);
+                app.showWinAlert("Player 2 win!", 2);
                 break;
-            case 'tie':
-                this.autoupdate('off');
+            }
+            case 'tie': {
+                app.autoupdate('off');
                 player1.incrementScore(1);
                 player2.incrementScore(1);
                 game.fieldPlayer1 = [0,0,0,0,0,0,0,0,0];
                 game.fieldPlayer2 = [0,0,0,0,0,0,0,0,0];
-                this.showWinAlert("Tie!", 0);
+                app.showWinAlert("Tie!", 0);
                 break;
+            }
         }
 
         Array.prototype.forEach.call(this._ui.gameFields, function(element, id) {
@@ -100,16 +101,10 @@ function App() {
     };
 
     this.autoupdate = function (state) {
-        var app = this;
         if(state == 'on') {
-            console.log("autoupdate");
-            app._updater = setTimeout(function () {
+            this._updater = setTimeout(function (app) {
                 app._game.checkState()
                     .then(function (response) {
-                        return JSON.parse(response);
-                    })
-                    .then(function (response) {
-                        app._game.token = response.token;
                         app._game.state = response.state;
                         app._game.fieldPlayer1 = response.field1;
                         app._game.fieldPlayer2 = response.field2;
@@ -118,56 +113,88 @@ function App() {
                         console.log(error);
                     })
                     .then(function () {
-                        $('#pleaseWaitDialog').modal('hide');
                         app.updateUI();
                     });
-            }, 2000);
+            }, 1000, this);
         } else if(state == 'off') {
-            clearInterval(app._updater);
+            clearInterval(this._updater);
         }
     }
 }
 
 document.body.onload = function () {
-
-    $('.navbar-collapse').click('li', function() {
-        $('.navbar-collapse').collapse('hide');
-    });
-
     var app = new App();
-
-    app._player1 = new Player(1);
-    app._player2 = new Player(2);
-
-    var newSinglGame = document.getElementById('btn-singl-game'),
-        newHotseatGame = document.getElementById('btn-hotseat-game'),
-        newNetGame = document.getElementById('btn-new-net-game'),
-        joinNetGame = document.getElementById('btn-join-net-game'),
-        gameBoard = document.getElementById("game_board");
-
     app.initUI();
 
-    addEvent(newSinglGame, 'click', function (event) {
+    $('.navbar-collapse').click('li', function() {
+        $('li[role="presentation"]').removeClass('active');
+        $('div[role="tabpanel"]').removeClass('active');
+        $('.navbar-collapse').collapse('hide');
+        app._player1 = new Player(1);
+        app._player2 = new Player(2);
+    });
+
+    $('.js-clear-game-btn').click('li', function() {
+        $('li[role="presentation"]').removeClass('active');
+        $('div[role="tabpanel"]').removeClass('active');
+        $('.navbar-collapse').collapse('hide');
+        app._player1 = new Player(1);
+        app._player2 = new Player(2);
+    });
+
+    $('#btn-singl-game').click(function (event) {
 
     });
 
-    addEvent(newHotseatGame, 'click', function (event) {
+    $('#btn-hotseat-game').click(function (event) {
+        //$('#pleaseWaitDialog').modal('show');
+        app._game = Game.hotseatGame();
+        app._game.newGame()
+            .then(function () {
+                //$('#pleaseWaitDialog').modal('hide');
+                app.updateUI();
+            });
 
+        $('#game_board').unbind('click').click(function(event) {
+            if (event.target && event.target.className == 'flex-game-field') {
+                if (event.target.innerHTML == "") {
+                    var cell = event.target.id.charAt(11);
+                    if (app._game.state == 'first-player-turn') {
+                        //$('#pleaseWaitDialog').modal('show');
+                        app._game.onTurn(app._player1, cell)
+                            .then(function (response) {
+                                app._game.state = response.state;
+                                app._game._fieldPlayer1 = response.field1;
+                                app._game._fieldPlayer2 = response.field2;
+                                //$('#pleaseWaitDialog').modal('hide');
+                                app.updateUI();
+                            })
+                    } else if (app._game.state == 'second-player-turn') {
+                        //$('#pleaseWaitDialog').modal('show');
+                        app._game.onTurn(app._player2, cell)
+                            .then(function (response) {
+                                app._game.state = response.state;
+                                app._game._fieldPlayer1 = response.field1;
+                                app._game._fieldPlayer2 = response.field2;
+                                //$('#pleaseWaitDialog').modal('hide');
+                                app.updateUI();
+                            })
+                    }
+                }
+            }
+        })
     });
 
-    addEvent(newNetGame, 'click', function (event) {
+    $('#btn-new-net-game').click(function (event) {
         $('#pleaseWaitDialog').modal('show');
         app._game = Game.netGame();
         app._game.newGame()
-            .then(function (response) {
-                return JSON.parse(response);
-            })
             .then(function (response) {
                 app._game.token = response.token;
                 app._game.state = response.state;
                 app._game.fieldPlayer1 = response.field1;
                 app._game.fieldPlayer2 = response.field2;
-                document.getElementById("tokenLabel").value = response.token;
+                $("#tokenLabel").val(response.token);
                 $('#creatingNewGame').modal('show');
                 return 'ok';
             })
@@ -179,18 +206,13 @@ document.body.onload = function () {
                 app.updateUI();
             });
 
-        addEvent(gameBoard, "click", function(event) {
+        $('#game_board').unbind('click').click(function(event) {
             if(event.target && event.target.className == 'flex-game-field') {
                 if (event.target.innerHTML == "") {
                     var cell = event.target.id.charAt(11);
-                    $('#pleaseWaitDialog').modal('show');
-
                     if((app._game.state == 'first-player-turn') && (app._player1.id == 1)) {
-                        console.log("player 1 turn on " + cell);
+                        $('#pleaseWaitDialog').modal('show');
                         app._game.onTurn(app._player1, cell)
-                            .then(function (response) {
-                                return JSON.parse(response);
-                            })
                             .then(function (response) {
                                 app._game.token = response.token;
                                 app._game.state = response.state;
@@ -206,11 +228,8 @@ document.body.onload = function () {
                                 app.updateUI();
                             });
                     } else if ((app._game.state == 'second-player-turn') && (app._player1.id == 2)) {
-                        console.log("player 2 turn on " + cell);
+                        $('#pleaseWaitDialog').modal('show');
                         app._game.onTurn(app._player1, cell)
-                            .then(function (response) {
-                                return JSON.parse(response);
-                            })
                             .then(function (response) {
                                 app._game.token = response.token;
                                 app._game.state = response.state;
@@ -225,24 +244,19 @@ document.body.onload = function () {
                                 $('#pleaseWaitDialog').modal('hide');
                                 app.updateUI();
                             });
-                    } else {
-                        app.updateUI();
                     }
                 }
             }
         });
     });
 
-    addEvent(joinNetGame, 'click', function (event) {
+    $('#btn-join-net-game').click(function (event) {
         $('#pleaseWaitDialog').modal('show');
-        app._player2 = new Player(1);
-        app._player1 = new Player(2);
+        app._player1._id = 2;
+        app._player2._id = 1;
         app._game = Game.netGame();
-        var token = document.getElementById('input-token-game').value;
+        var token = $('#input-token-game').val();
         app._game.joinGame(token)
-            .then(function (response) {
-                return JSON.parse(response);
-            })
             .then(function (response) {
                 app._game.token = response.token;
                 app._game.state = response.state;
@@ -256,21 +270,15 @@ document.body.onload = function () {
             .then(function () {
                 $('#pleaseWaitDialog').modal('hide');
                 app.updateUI();
-                app.autoupdate('on');
             });
 
-        addEvent(gameBoard, "click", function(event) {
+        $('#game_board').unbind('click').click(function(event) {
             if(event.target && event.target.className == 'flex-game-field') {
                 if (event.target.innerHTML == "") {
                     var cell = event.target.id.charAt(11);
-                    $('#pleaseWaitDialog').modal('show');
-
                     if((app._game.state == 'first-player-turn') && (app._player1.id == 1)) {
-                        console.log("player 1 turn on " + cell);
+                        $('#pleaseWaitDialog').modal('show');
                         app._game.onTurn(app._player1, cell)
-                            .then(function (response) {
-                                return JSON.parse(response);
-                            })
                             .then(function (response) {
                                 app._game.token = response.token;
                                 app._game.state = response.state;
@@ -286,12 +294,9 @@ document.body.onload = function () {
                                 app.updateUI();
                             });
                     } else if ((app._game.state == 'second-player-turn') && (app._player1.id == 2)) {
-                        console.log("player 2 turn on " + cell);
+                        $('#pleaseWaitDialog').modal('show');
                         app._game.onTurn(app._player1, cell)
-                            .then(function (response) {
-                                return JSON.parse(response);
-                            })
-                            .then(function (response) {
+                           .then(function (response) {
                                 app._game.token = response.token;
                                 app._game.state = response.state;
                                 app._game.fieldPlayer1 = response.field1;
@@ -305,13 +310,22 @@ document.body.onload = function () {
                                 $('#pleaseWaitDialog').modal('hide');
                                 app.updateUI();
                             });
-                    } else {
-                        app.updateUI();
                     }
                 }
             }
         });
     });
 
-
+    $('#btn-continue-game').click(function (event) {
+        switch (app._game.token) {
+            case 0:
+                $('#btn-singl-game').click();
+                break;
+            case 1:
+                $('#btn-hotseat-game').click();
+                break;
+            default:
+                $('#btn-new-game').click();
+        }
+    })
 };
