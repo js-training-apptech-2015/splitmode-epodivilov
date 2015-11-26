@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,8 +7,7 @@
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <title>Tic-tac-toe</title>
 
-    <!-- Bootstrap -->
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+    <link href="resource/css/bootstrap.min.css" rel="stylesheet">
     <link href="resource/css/tictactoe.css" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -19,134 +18,157 @@
     <![endif]-->
 </head>
 <body>
-<nav class="navbar navbar-default navbar-static-top">
-    <div class="container-fluid">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand">Tic-tac-toe</a>
-        </div>
-
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav">
-                <li><a href="#newGameModal" role="button" data-toggle="modal">New game</a></li>
-            </ul>
-        </div><!-- /.navbar-collapse -->
-    </div><!-- /.container-fluid -->
-</nav>
-
-<div id="newGameModal" class="modal fade" data-backdrop="static">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">New game</h4>
+    <!-- Top nav bar-->
+    <nav class="navbar navbar-default navbar-static-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand">Tic-tac-toe</a>
             </div>
-            <div class="modal-body">
-                <!-- my form-->
-                <!--<div class="row">-->
-                    <div class="tabbable"> <!-- Only required for left/right tabs -->
-                        <ul id="gamemode" class="nav nav-tabs">
-                            <li class="active"><a href="#singleplayer" data-toggle="tab">Singleplayer</a></li>
-                            <li><a href="#multiplayer" data-toggle="tab">Multiplayer</a></li>
+
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li><a id="btn-new-game" href="#newGameModal" role="button" data-toggle="modal" class="js-clear-game-btn">New game</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Game board-->
+    <div id="game_board">
+        <div class="flex-game-row">
+            <div id="game_field_0" class="flex-game-field">○</div>
+            <div id="game_field_1" class="flex-game-field">○</div>
+            <div id="game_field_2" class="flex-game-field">×</div>
+        </div>
+        <div class="flex-game-row">
+            <div id="game_field_3" class="flex-game-field">○</div>
+            <div id="game_field_4" class="flex-game-field">×</div>
+            <div id="game_field_5" class="flex-game-field">○</div>
+        </div>
+        <div class="flex-game-row">
+            <div id="game_field_6" class="flex-game-field">×</div>
+            <div id="game_field_7" class="flex-game-field">○</div>
+            <div id="game_field_8" class="flex-game-field">○</div>
+        </div>
+    </div>
+
+    <!-- Footer-->
+    <footer class="footer">
+        <div class="flex-score-board">
+            <div class="flex-score-field text-muted"><span id="name_player_1">Jamaica</span>:<span id="score_player_1">5</span></div>
+            <div class="flex-score-field text-muted"><span id="name_player_2">Argentina</span>:<span id="score_player_2">0</span></div>
+        </div>
+    </footer>
+
+    <!-- Game over modal dialog -->
+    <div id="resultModal" class="modal fadebs-example-modal-sm" data-backdrop="static">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title text-center">Game over</h4>
+                </div>
+                <div class="modal-body">
+                    <h4 id="player_win" class="modal-title text-center">Player wins!</h4>
+                </div>
+                <div class="modal-footer">
+                    <button id="btn-continue-game" type="button" class="btn btn-default pull-left" data-dismiss="modal" tabindex=4>Continue</button>
+                    <a href="#newGameModal" role="button" data-toggle="modal" class="btn btn-primary pull-right js-clear-game-btn" data-dismiss="modal">New game</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game token modal message -->
+    <div class="modal fade" id="creatingNewGame" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">New game created</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="input-group">
+                        <span class="input-group-addon" id="basic-addon">Game token: </span>
+                        <input type="text" class="form-control" id="tokenLabel" aria-describedby="basic-addon" readonly>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Please wait modal message -->
+    <div class="modal fade" id="pleaseWaitDialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Please wait ...</h4>
+                </div>
+                <div class="modal-body">
+                    <img src="resource/images/ajax-loader.gif" id="loading-indicator" class="center-block"/>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- New game dialog -->
+    <div id="newGameModal" class="modal fade" data-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">New game</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="tab-nav"> <!-- Nav tabs -->
+                        <ul class="nav nav-pills nav-justified" role="tablist">
+                            <li id="li-single-game" role="presentation"><a href="#singleplayer" aria-controls="home" role="tab" data-toggle="tab">Singlplayer</a></li>
+                            <li id="li-hotseat-game" role="presentation"><a href="#hotseat" aria-controls="home" role="tab" data-toggle="tab">Hotseat</a></li>
+                            <li id="li-network-game" role="presentation"><a href="#network" aria-controls="profile" role="tab" data-toggle="tab">Network</a></li>
                         </ul>
-                        <div class="tab-content row top-buffer">
-                            <div class="tab-pane active" id="singleplayer">
-                                <form action="#">
-                                    <div class="col-xs-6">
-                                        <div class="form-group">
-                                            <label for="playername1" class="text-center">Player from X team</label>
-                                            <input type="text" class="form-control" id="playername" placeholder="Player name" value="" tabindex=1>
-                                        </div>
-                                    </div>
-                                    <div class="col-xs-6">
-                                        <div class="form-group">
-                                            <label for="playername2" class="text-center">Player from O team</label>
-                                            <input type="text" class="form-control" id="computername" placeholder="Player name"  value="Computer" disabled>
-                                        </div>
-                                    </div>
-                                </form>
+                    </div>
+                    <div class="tab-content"> <!-- Tab panes -->
+                        <div id="singleplayer" role="tabpanel" class="tab-pane">
+                            <div class="top-buffer">
+                                <button id="btn-singl-game" type="button" class="btn btn-default btn-lg btn-block" data-dismiss="modal">New game</button>
                             </div>
-                            <div class="tab-pane" id="multiplayer">
-                                    <form action="#">
-                                        <div class="col-xs-6">
-                                            <div class="form-group">
-                                                <label for="playername1" class="text-center">Player from X team</label>
-                                                <input type="text" class="form-control" id="playername1" placeholder="Player name" value="" tabindex=1>
-                                            </div>
-                                        </div>
-                                        <div class="col-xs-6">
-                                            <div class="form-group">
-                                                <label for="playername2" class="text-center">Player from O team</label>
-                                                <input type="text" class="form-control" id="playername2" placeholder="Player name"  value="" tabindex=2>
-                                            </div>
-                                        </div>
-                                    </form>
+                        </div>
+                        <div id="hotseat" role="tabpanel" class="tab-pane">
+                            <div class="top-buffer">
+                                <button id="btn-hotseat-game" type="button" class="btn btn-default btn-lg btn-block" data-dismiss="modal">New game</button>
+                            </div>
+                        </div>
+                        <div id="network" role="tabpanel" class="tab-pane">
+                            <div class="top-buffer">
+                                <button id="btn-new-net-game" type="button" class="btn btn-default btn-lg btn-block" data-dismiss="modal">New game</button>
+                                <p class="text-center top-buffer">or</p>
+                                <div class="input-group">
+                                    <input id="input-token-game" type="text" class="form-control" placeholder="Input token" value="">
+                                        <span class="input-group-btn">
+                                            <button id="btn-join-net-game" class="btn btn-default" type="button" data-dismiss="modal">Join</button>
+                                        </span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                <!--</div>-->
-                <!-- my form-->
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default pull-left" data-dismiss="modal" tabindex=4>Close</button>
-                <button id="newGame" type="button" class="btn btn-primary pull-right" data-dismiss="modal" tabindex=3>New game</button>
-            </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-
-<div id="game_board">
-    <div class="flex-game-row">
-        <div id="game_field_0" class="flex-game-field">○</div>
-        <div id="game_field_1" class="flex-game-field">○</div>
-        <div id="game_field_2" class="flex-game-field">×</div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default btn-lg btn-block" data-dismiss="modal" tabindex=4>Close</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
     </div>
-    <div class="flex-game-row">
-        <div id="game_field_3" class="flex-game-field">○</div>
-        <div id="game_field_4" class="flex-game-field">×</div>
-        <div id="game_field_5" class="flex-game-field">○</div>
-    </div>
-    <div class="flex-game-row">
-        <div id="game_field_6" class="flex-game-field">×</div>
-        <div id="game_field_7" class="flex-game-field">○</div>
-        <div id="game_field_8" class="flex-game-field">○</div>
-    </div>
-</div>
-
-<div id="resultModal" class="modal fadebs-example-modal-sm" data-backdrop="static">
-    <div class="modal-dialog modal-sm">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title text-center">Game over</h4>
-            </div>
-            <div class="modal-body">
-                <h4 id="winner" class="modal-title text-center">Player wins!</h4>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default pull-left" data-dismiss="modal" tabindex=4>Continue</button>
-                <a href="#newGameModal" role="button" data-toggle="modal" class="btn btn-primary pull-right" data-dismiss="modal">New game</a>
-            </div>
-        </div>
-    </div>
-</div>
-
-<footer class="footer">
-    <div id="score_board" class="flex-score-board">
-        <div class="flex-score-field text-muted"><span id="player1" >Jamaica</span>:<span id="score1">5</span></div>
-        <div class="flex-score-field text-muted"><span id="player2" >Argentina</span>:<span id="score2">0</span></div>
-    </div>
-</footer>
-
-<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-<!-- Include all compiled plugins (below), or include individual files as needed -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-<script src="resource/js/index.js"></script>
+    <!-- include JS-->
+    <script src="resource/js/jquery.min.js"></script>
+    <script src="resource/js/bootstrap.min.js"></script>
+    <script src="resource/js/Player.js"></script>
+    <script src="resource/js/Game.js"></script>
+    <script src="resource/js/app.js"></script>
 </body>
 </html>

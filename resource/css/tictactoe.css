@@ -40,15 +40,19 @@ body {
     font-size: 5em;
     flex: 1;
     height: auto;
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.flex-game-field:before {
+.flex-game-field::before {
     content:'';
-    float:left;
-    padding-top:100%;
+    float: left;
+    padding-top: 100%;
 }
 
 .flex-score-board {
@@ -70,11 +74,15 @@ body {
     font-size: 1.5em;
     flex: 1;
     height: auto;
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
 .top-buffer {
-    margin-top:20px;
+    margin-top:10px;
 }
