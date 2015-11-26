@@ -4,8 +4,20 @@ function createBinaryString (nMask) {
     return sMask.substring(sMask.length-9); //length 9 symbols
 }
 
-function checkWinCombinations() {
+function checkTie(array1, array2) {
+    return array1.every(function (element, id) {
+        return (array1[id] | array2[id]);
+    });
+}
 
+function checkWinCombinations(string) {
+    var winCombs = ['000000111', '000111000', '111000000', '100010001', '001010100', '001001001', '010010010', '100100100'];
+    for(var i = 0; i < winCombs.length; i++) {
+        if(string == winCombs[i]) {
+            return true;
+        }
+    }
+    return false;
 }
 
 function Game(token) {
@@ -65,7 +77,8 @@ Game.netGame = function () {
             xmlhttp.onreadystatechange = function() {
                 if (xmlhttp.readyState == 4) {
                     if (xmlhttp.status == 201) {
-                        resolve(xmlhttp.responseText);
+                        var response = JSON.parse(xmlhttp.responseText);
+                        resolve(response);
                     } else {
                         var error = new Error(xmlhttp.statusText);
                         error.code = xmlhttp.status;
@@ -89,7 +102,8 @@ Game.netGame = function () {
             xmlhttp.onreadystatechange = function() {
                 if (xmlhttp.readyState == 4) {
                     if (xmlhttp.status == 200) {
-                        resolve(xmlhttp.responseText);
+                        var response = JSON.parse(xmlhttp.responseText);
+                        resolve(response);
                     } else {
                         var error = new Error(xmlhttp.statusText);
                         error.code = xmlhttp.status;
@@ -113,7 +127,8 @@ Game.netGame = function () {
             xmlhttp.onreadystatechange = function() {
                 if (xmlhttp.readyState == 4) {
                     if (xmlhttp.status == 200) {
-                        resolve(xmlhttp.responseText);
+                        var response = JSON.parse(xmlhttp.responseText);
+                        resolve(response);
                     } else {
                         var error = new Error(xmlhttp.statusText);
                         error.code = xmlhttp.status;
@@ -134,7 +149,8 @@ Game.netGame = function () {
             xmlhttp.onreadystatechange = function() {
                 if (xmlhttp.readyState == 4) {
                     if (xmlhttp.status == 200) {
-                        resolve(xmlhttp.responseText);
+                        var response = JSON.parse(xmlhttp.responseText);
+                        resolve(response);
                     } else {
                         var error = new Error(xmlhttp.statusText);
                         error.code = xmlhttp.status;
@@ -156,6 +172,7 @@ Game.hotseatGame = function () {
     var gameObj = new Game();
 
     gameObj.newGame = function () {
+        gameObj.token = 1;
         gameObj.state = 'first-player-turn';
         return Promise.resolve();
     };
@@ -163,28 +180,48 @@ Game.hotseatGame = function () {
     gameObj.checkState = function () {
         return new Promise(function (resolve, reject) {
             var response = {};
-            response.token = gameObj.token;
             response.field1 = gameObj.fieldPlayer1;
             response.field2 = gameObj.fieldPlayer2;
-            //if(true) {
+            if(checkWinCombinations(gameObj.fieldPlayer1.join(""))) {
+                response.state = 'first-player-wins';
+            } else if(checkWinCombinations(gameObj.fieldPlayer2.join(""))) {
+                response.state = 'second-player-wins';
+            } else if(checkTie(gameObj.fieldPlayer1,gameObj.fieldPlayer2)) {
+                response.state = 'tie';
+            } else {
                 response.state = gameObj.state;
-            //};
-            resolve(JSON.stringify(response));
+            }
+
+            resolve(response);
         });
     };
 
     gameObj.onTurn = function (player, position) {
+        var game = this;
         return new Promise(function (resolve, reject) {
+            var response = {};
+            response.field1 = game.fieldPlayer1;
+            response.field2 = game.fieldPlayer2;
             switch (player.id) {
                 case 1:
-                    gameObj._fieldPlayer1[8-position] = 1;
-                    resolve();
+                    response.field1[8-position] = 1;
+                    response.state = 'second-player-turn';
                     break;
                 case 2:
-                    gameObj._fieldPlayer2[8-position] = 1;
-                    resolve();
+                    response.field2[8-position] = 1;
+                    response.state = 'first-player-turn';
                     break;
             }
+
+            if(checkWinCombinations(gameObj.fieldPlayer1.join(""))) {
+                response.state = 'first-player-wins';
+            } else if(checkWinCombinations(gameObj.fieldPlayer2.join(""))) {
+                response.state = 'second-player-wins';
+            } else if(checkTie(gameObj.fieldPlayer1,gameObj.fieldPlayer2)) {
+                response.state = 'tie';
+            }
+
+            resolve(response);
         });
     };
 
