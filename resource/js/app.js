@@ -143,7 +143,36 @@ document.body.onload = function () {
     });
 
     $('#btn-singl-game').click(function (event) {
+        app._game = Game.singleGame();
+        app._game.newGame()
+            .then(function () {
+                //$('#pleaseWaitDialog').modal('hide');
+                app.updateUI();
+            });
 
+        $('#game_board').unbind('click').click(function(event) {
+            if (event.target && event.target.className == 'flex-game-field') {
+                if (event.target.innerHTML == "") {
+                    var cell = event.target.id.charAt(11);
+                    //$('#pleaseWaitDialog').modal('show');
+                    app._game.onTurn(app._player1, cell)
+                        .then(function (response) {
+                            app._game.state = response.state;
+                            app._game._fieldPlayer1 = response.field1;
+                            app._game._fieldPlayer2 = response.field2;
+                            //$('#pleaseWaitDialog').modal('hide');
+                            app._game.onTurn(app._player2, cell)
+                                .then(function (response) {
+                                    app._game.state = response.state;
+                                    app._game._fieldPlayer1 = response.field1;
+                                    app._game._fieldPlayer2 = response.field2;
+                                    //$('#pleaseWaitDialog').modal('hide');
+                                    app.updateUI();
+                                });
+                        });
+                }
+            }
+        })
     });
 
     $('#btn-hotseat-game').click(function (event) {
@@ -328,4 +357,6 @@ document.body.onload = function () {
                 $('#btn-new-game').click();
         }
     })
+
+    $('#btn-new-game').click(); //autostart
 };

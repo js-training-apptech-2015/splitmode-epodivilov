@@ -20,6 +20,29 @@ function checkWinCombinations(string) {
     return false;
 }
 
+function findPosition(fieldArray1, fieldArray2) {
+    if((fieldArray2[8] == 0 && fieldArray1[8] == 0) && ((fieldArray1[7] == 1 && fieldArray1[6] == 1) || (fieldArray1[5] == 1 && fieldArray1[2] == 1) || (fieldArray1[4] == 1 && fieldArray1[0] == 1))){        return 8;
+    } else if((fieldArray2[7] == 0 && fieldArray1[7] == 0) && ((fieldArray1[8] == 1 && fieldArray1[6] == 1) || (fieldArray1[4] == 1 && fieldArray1[1] == 1))) {        return 7;
+    } else if((fieldArray2[6] == 0 && fieldArray1[6] == 0) && ((fieldArray1[8] == 1 && fieldArray1[7] == 1) || (fieldArray1[2] == 1 && fieldArray1[4] == 1) || (fieldArray1[3] == 1 && fieldArray1[0] == 1))) {        return 6;
+    } else if((fieldArray2[5] == 0 && fieldArray1[5] == 0) && ((fieldArray1[4] == 1 && fieldArray1[3] == 1) || (fieldArray1[8] == 1 && fieldArray1[2] == 1))){        return 5;
+    } else if((fieldArray2[4] == 0 && fieldArray1[4] == 0) && ((fieldArray1[8] == 1 && fieldArray1[0] == 1) || (fieldArray1[7] == 1 && fieldArray1[1] == 1) || (fieldArray1[6] == 1 && fieldArray1[2] == 1) || (fieldArray1[5] == 1 && fieldArray1[3] == 1))) {        return 4;
+    } else if((fieldArray2[3] == 0 && fieldArray1[3] == 0) && ((fieldArray1[6] == 1 && fieldArray1[0] == 1) || (fieldArray1[5] == 1 && fieldArray1[4] == 1))) {        return 3;
+    } else if((fieldArray2[2] == 0 && fieldArray1[2] == 0) && ((fieldArray1[1] == 1 && fieldArray1[0] == 1) || (fieldArray1[8] == 1 && fieldArray1[5] == 1) || (fieldArray1[6] == 1 && fieldArray1[4] == 1))){        return 2;
+    } else if((fieldArray2[1] == 0 && fieldArray1[1] == 0) && ((fieldArray1[7] == 1 && fieldArray1[4] == 1) || (fieldArray1[2] == 1 && fieldArray1[1] == 1))) {        return 1;
+    } else if((fieldArray2[0] == 0 && fieldArray1[0] == 0) && ((fieldArray1[2] == 1 && fieldArray1[1] == 1) || (fieldArray1[6] == 1 && fieldArray1[3] == 1) || (fieldArray1[8] == 1 && fieldArray1[4] == 1))) {        return 0;
+    } else {
+        if(fieldArray2[4] == 0 && fieldArray1[4] == 0) { return 4;}
+        if(fieldArray2[8] == 0 && fieldArray1[8] == 0) { return 8;}
+        if(fieldArray2[0] == 0 && fieldArray1[0] == 0) { return 0;}
+        if(fieldArray2[1] == 0 && fieldArray1[1] == 0) { return 1;}
+        if(fieldArray2[5] == 0 && fieldArray1[5] == 0) { return 5;}
+        if(fieldArray2[6] == 0 && fieldArray1[6] == 0) { return 6;}
+        if(fieldArray2[7] == 0 && fieldArray1[7] == 0) { return 7;}
+        if(fieldArray2[3] == 0 && fieldArray1[3] == 0) { return 3;}
+        if(fieldArray2[2] == 0 && fieldArray1[2] == 0) { return 2;}
+    }
+}
+
 function Game(token) {
     this._token = token || 0;
     this._url = 'http://aqueous-ocean-2864.herokuapp.com/games';
@@ -224,6 +247,68 @@ Game.hotseatGame = function () {
             resolve(response);
         });
     };
+
+    return gameObj;
+};
+
+Game.singleGame = function () {
+    var gameObj = new Game();
+
+    gameObj.newGame = function () {
+        gameObj.token = 0;
+        gameObj.state = 'first-player-turn';
+        return Promise.resolve();
+    };
+
+    gameObj.checkState = function () {
+        return new Promise(function (resolve, reject) {
+            var response = {};
+            response.field1 = gameObj.fieldPlayer1;
+            response.field2 = gameObj.fieldPlayer2;
+            if(checkWinCombinations(gameObj.fieldPlayer1.join(""))) {
+                response.state = 'first-player-wins';
+            } else if(checkWinCombinations(gameObj.fieldPlayer2.join(""))) {
+                response.state = 'second-player-wins';
+            } else if(checkTie(gameObj.fieldPlayer1,gameObj.fieldPlayer2)) {
+                response.state = 'tie';
+            } else {
+                response.state = gameObj.state;
+            }
+
+            resolve(response);
+        });
+    };
+
+    gameObj.onTurn = function (player, position) {
+        var game = this;
+        return new Promise(function (resolve, reject) {
+            var response = {};
+            response.field1 = game.fieldPlayer1;
+            response.field2 = game.fieldPlayer2;
+            switch (player.id) {
+                case 1:
+                    response.field1[8-position] = 1;
+                    response.state = 'second-player-turn';
+                    break;
+                case 2:
+                    var pos = findPosition(game.fieldPlayer1, game.fieldPlayer2);
+                    console.log(pos);
+                    response.field2[pos] = 1;
+                    response.state = 'first-player-turn';
+                    break;
+            }
+
+            if(checkWinCombinations(gameObj.fieldPlayer1.join(""))) {
+                response.state = 'first-player-wins';
+            } else if(checkWinCombinations(gameObj.fieldPlayer2.join(""))) {
+                response.state = 'second-player-wins';
+            } else if(checkTie(gameObj.fieldPlayer1,gameObj.fieldPlayer2)) {
+                response.state = 'tie';
+            }
+
+            resolve(response);
+        });
+    }
 
     return gameObj;
 };
