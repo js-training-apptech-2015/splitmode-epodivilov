@@ -16,6 +16,7 @@
     <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
+
 </head>
 <body>
     <!-- Top nav bar-->
@@ -40,21 +41,23 @@
     </nav>
 
     <!-- Game board-->
-    <div id="game_board">
-        <div class="flex-game-row">
-            <div id="game_field_0" class="flex-game-field">○</div>
-            <div id="game_field_1" class="flex-game-field">○</div>
-            <div id="game_field_2" class="flex-game-field">×</div>
-        </div>
-        <div class="flex-game-row">
-            <div id="game_field_3" class="flex-game-field">○</div>
-            <div id="game_field_4" class="flex-game-field">×</div>
-            <div id="game_field_5" class="flex-game-field">○</div>
-        </div>
-        <div class="flex-game-row">
-            <div id="game_field_6" class="flex-game-field">×</div>
-            <div id="game_field_7" class="flex-game-field">○</div>
-            <div id="game_field_8" class="flex-game-field">○</div>
+    <div id="game_board" class="gameBoard">
+        <div class="ticTacToe">
+            <div class="column">
+                <span id="game_field_0" class="square">○</span>
+                <span id="game_field_1" class="square">○</span>
+                <span id="game_field_2" class="square">×</span>
+            </div>
+            <div class="column">
+                <span id="game_field_3" class="square">○</span>
+                <span id="game_field_4" class="square">×</span>
+                <span id="game_field_5" class="square">○</span>
+            </div>
+            <div class="column">
+                <span id="game_field_6" class="square">×</span>
+                <span id="game_field_7" class="square">○</span>
+                <span id="game_field_8" class="square">○</span>
+            </div>
         </div>
     </div>
 
@@ -167,6 +170,11 @@
     <!-- include JS-->
     <script src="resource/js/lib/jquery.min.js"></script>
     <script src="resource/js/lib/bootstrap.min.js"></script>
+
+    <![if !IE]>
+        <script src="resource/js/lib/promise-7.0.4.min.js"></script>
+    <![endif]>
+
     <script src="resource/js/Player.js"></script>
     <script src="resource/js/Game.js"></script>
     <script src="resource/js/app.js"></script>

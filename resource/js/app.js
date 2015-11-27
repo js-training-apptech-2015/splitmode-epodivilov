@@ -8,7 +8,7 @@ function App() {
     this._updater = null;
 
     this.initUI = function () {
-        this._ui.gameFields      = document.getElementsByClassName('flex-game-field');
+        this._ui.gameFields      = document.getElementsByClassName('square');
         this._ui.namePlayer1    = document.getElementById('name_player_1');
         this._ui.namePlayer2    = document.getElementById('name_player_2');
         this._ui.scorePlayer1   = document.getElementById('score_player_1');
@@ -151,7 +151,7 @@ document.body.onload = function () {
             });
 
         $('#game_board').unbind('click').click(function(event) {
-            if (event.target && event.target.className == 'flex-game-field') {
+            if (event.target && event.target.className == 'square') {
                 if (event.target.innerHTML == "") {
                     var cell = event.target.id.charAt(11);
                     //$('#pleaseWaitDialog').modal('show');
@@ -185,7 +185,7 @@ document.body.onload = function () {
             });
 
         $('#game_board').unbind('click').click(function(event) {
-            if (event.target && event.target.className == 'flex-game-field') {
+            if (event.target && event.target.className == 'square') {
                 if (event.target.innerHTML == "") {
                     var cell = event.target.id.charAt(11);
                     if (app._game.state == 'first-player-turn') {
@@ -236,7 +236,7 @@ document.body.onload = function () {
             });
 
         $('#game_board').unbind('click').click(function(event) {
-            if(event.target && event.target.className == 'flex-game-field') {
+            if(event.target && event.target.className == 'square') {
                 if (event.target.innerHTML == "") {
                     var cell = event.target.id.charAt(11);
                     if((app._game.state == 'first-player-turn') && (app._player1.id == 1)) {
@@ -302,7 +302,7 @@ document.body.onload = function () {
             });
 
         $('#game_board').unbind('click').click(function(event) {
-            if(event.target && event.target.className == 'flex-game-field') {
+            if(event.target && event.target.className == 'square') {
                 if (event.target.innerHTML == "") {
                     var cell = event.target.id.charAt(11);
                     if((app._game.state == 'first-player-turn') && (app._player1.id == 1)) {
