@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <title>Tic-tac-toe</title>
@@ -16,7 +15,6 @@
     <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <script src="resource/js/lib/promise-7.0.4.min.js"></script>
     <![endif]-->
 
 </head>
@@ -79,7 +77,6 @@
                     <h4 class="modal-title text-center">Games list</h4>
                 </div>
                 <div id="div-games-list" class="modal-body pre-scrollable">
-
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default pull-left" data-dismiss="modal" tabindex=4>Close</button>
@@ -186,12 +183,11 @@
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
     </div>
-    <!-- include JS -->
-    <script src="resource/js/lib/jquery.min.js"></script>
-    <script src="resource/js/lib/bootstrap.min.js"></script>
 
-    <script src="resource/js/Player.js"></script>
-    <script src="resource/js/Game.js"></script>
-    <script src="resource/js/app.js"></script>
+    <!-- include JS -->
+
+    <script src="resource/js/lib/promise.js"></script>
+    <script data-main="resource/js/app" src="resource/js/require.js"></script>
+
 </body>
 </html>
