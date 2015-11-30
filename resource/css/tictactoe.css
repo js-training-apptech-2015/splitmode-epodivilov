@@ -102,12 +102,26 @@ body {
 
 .ticTacToe .square {
     display: block;
-    width: 150px;
+    width:  150px;
     height: 150px;
     background: #f7f7f7;
     color: #6f6f6f;
     font-size: 5em;
     font-weight: 100;
     text-align: center;
-    padding: 20px;
+    padding: 25px;
+}
+
+@media only screen and (max-width: 360px) {
+    .ticTacToe {
+        width:  350px;
+        height: 350px;
+        padding: 5px;
+    }
+
+    .ticTacToe .square {
+        width:  110px;
+        height: 110px;
+        padding: 0px;
+    }
 }
