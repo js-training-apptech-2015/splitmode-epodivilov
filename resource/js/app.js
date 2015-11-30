@@ -464,5 +464,5 @@ document.body.onload = function () {
         }
     });
 
-    //$('#btn-new-game').click(); //autostart
+    $('#btn-new-game').click(); //autostart
 };
