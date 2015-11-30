@@ -325,7 +325,7 @@ document.body.onload = function () {
                     } else if ((app._game.state == 'second-player-turn') && (app._player1.id == 2)) {
                         $('#pleaseWaitDialog').modal('show');
                         app._game.onTurn(app._player1, cell)
-                           .then(function (response) {
+                            .then(function (response) {
                                 app._game.token = response.token;
                                 app._game.state = response.state;
                                 app._game.fieldPlayer1 = response.field1;
@@ -464,5 +464,5 @@ document.body.onload = function () {
         }
     });
 
-    $('#btn-new-game').click(); //autostart
+    //$('#btn-new-game').click(); //autostart
 };
