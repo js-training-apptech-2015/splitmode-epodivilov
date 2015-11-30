@@ -356,7 +356,113 @@ document.body.onload = function () {
             default:
                 $('#btn-new-game').click();
         }
-    })
+    });
+
+    $('#btn-list-game').click(function (event) {
+        var request = new Promise(function (resolve, reject) {
+            var xmlhttp = new XMLHttpRequest();
+
+            xmlhttp.open("GET", 'http://aqueous-ocean-2864.herokuapp.com/games', true);
+            xmlhttp.setRequestHeader('Content-Type', 'application/json');
+
+            xmlhttp.onreadystatechange = function() {
+                if (xmlhttp.readyState == 4) {
+                    if (xmlhttp.status == 200) {
+                        var response = [];
+                        var games = JSON.parse(xmlhttp.responseText);
+                        for (var game in games) {
+                            if(games[game].field1 == 0 && games[game].field2 == 0) {
+                                response.push(games[game].token);
+                            }
+                        }
+                        resolve(response);
+                    } else {
+                        reject('error');
+                    }
+                }
+            };
+
+            xmlhttp.send();
+        });
+
+        request.then(function (response) {
+            for (var i = 0; i < response.length; i++) {
+                $('#div-games-list').append('<div class="list-group"><div class="list-group-item"><span>Token: ' + response[i] + '</span><button class="btn btn-xs btn-info pull-right js-join-game">Join</button></div></div>')
+            }
+            $('#pleaseWaitDialog').modal('hide');
+            $('#gamesModal').modal('show');
+        });
+    });
+
+    $('#div-games-list').click(function (event) {
+        if(event.target.tagName == 'BUTTON') {
+            $('#gamesModal').modal('hide');
+            $('#pleaseWaitDialog').modal('show');
+            app._player1._id = 2;
+            app._player2._id = 1;
+            app._game = Game.netGame();
+            var token = $(event.target).siblings('span').text().replace('Token: ','');
+            app._game.joinGame(token)
+                .then(function (response) {
+                    app._game.token = response.token;
+                    app._game.state = response.state;
+                    app._game.fieldPlayer1 = response.field1;
+                    app._game.fieldPlayer2 = response.field2;
+                    return 'ok';
+                })
+                .catch(function (error) {
+                    console.log(error);
+                })
+                .then(function () {
+                    $('#pleaseWaitDialog').modal('hide');
+                    app.updateUI();
+
+                });
+
+            $('#game_board').unbind('click').click(function(event) {
+                if(event.target && event.target.className == 'square') {
+                    if (event.target.innerHTML == "") {
+                        var cell = event.target.id.charAt(11);
+                        if((app._game.state == 'first-player-turn') && (app._player1.id == 1)) {
+                            $('#pleaseWaitDialog').modal('show');
+                            app._game.onTurn(app._player1, cell)
+                                .then(function (response) {
+                                    app._game.token = response.token;
+                                    app._game.state = response.state;
+                                    app._game.fieldPlayer1 = response.field1;
+                                    app._game.fieldPlayer2 = response.field2;
+                                    return 'ok';
+                                })
+                                .catch(function (error) {
+                                    console.log(error);
+                                })
+                                .then(function () {
+                                    $('#pleaseWaitDialog').modal('hide');
+                                    app.updateUI();
+                                });
+                        } else if ((app._game.state == 'second-player-turn') && (app._player1.id == 2)) {
+                            $('#pleaseWaitDialog').modal('show');
+                            app._game.onTurn(app._player1, cell)
+                                .then(function (response) {
+                                    app._game.token = response.token;
+                                    app._game.state = response.state;
+                                    app._game.fieldPlayer1 = response.field1;
+                                    app._game.fieldPlayer2 = response.field2;
+                                    return 'ok';
+                                })
+                                .catch(function (error) {
+                                    console.log(error);
+                                })
+                                .then(function () {
+                                    $('#pleaseWaitDialog').modal('hide');
+                                    app.updateUI();
+                                });
+                        }
+                    }
+                }
+            });
+        }
+    });
 
     $('#btn-new-game').click(); //autostart
 };
