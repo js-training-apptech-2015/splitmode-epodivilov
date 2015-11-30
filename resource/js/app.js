@@ -243,14 +243,14 @@ requirejs(['jquery','bootstrap', 'Player', 'Game'], function ($, bootstrap, Play
                     return 'ok';
                 })
                 .catch(function (error) {
-                    console.log(error);
+                    alert(error);
                 })
                 .then(function () {
                     $('#pleaseWaitDialog').modal('hide');
                     app.updateUI();
                 });
 
-            $('#game_board').unbind('click').click(function(event) {
+            $('#game_board').unbind('click').click(function (event) {
                 if(event.target && event.target.className == 'square') {
                     if (event.target.innerHTML == "") {
                         var cell = event.target.id.charAt(11);
@@ -265,7 +265,7 @@ requirejs(['jquery','bootstrap', 'Player', 'Game'], function ($, bootstrap, Play
                                     return 'ok';
                                 })
                                 .catch(function (error) {
-                                    console.log(error);
+                                    alert(error);
                                 })
                                 .then(function () {
                                     $('#pleaseWaitDialog').modal('hide');
@@ -282,7 +282,7 @@ requirejs(['jquery','bootstrap', 'Player', 'Game'], function ($, bootstrap, Play
                                     return 'ok';
                                 })
                                 .catch(function (error) {
-                                    console.log(error);
+                                    alert(error);
                                 })
                                 .then(function () {
                                     $('#pleaseWaitDialog').modal('hide');
@@ -309,14 +309,14 @@ requirejs(['jquery','bootstrap', 'Player', 'Game'], function ($, bootstrap, Play
                     return 'ok';
                 })
                 .catch(function (error) {
-                    console.log(error);
+                    alert(error);
                 })
                 .then(function () {
                     $('#pleaseWaitDialog').modal('hide');
                     app.updateUI();
                 });
 
-            $('#game_board').unbind('click').click(function(event) {
+            $('#game_board').unbind('click').click(function (event) {
                 if(event.target && event.target.className == 'square') {
                     if (event.target.innerHTML == "") {
                         var cell = event.target.id.charAt(11);
@@ -331,7 +331,7 @@ requirejs(['jquery','bootstrap', 'Player', 'Game'], function ($, bootstrap, Play
                                     return 'ok';
                                 })
                                 .catch(function (error) {
-                                    console.log(error);
+                                    alert(error);
                                 })
                                 .then(function () {
                                     $('#pleaseWaitDialog').modal('hide');
@@ -348,7 +348,7 @@ requirejs(['jquery','bootstrap', 'Player', 'Game'], function ($, bootstrap, Play
                                     return 'ok';
                                 })
                                 .catch(function (error) {
-                                    console.log(error);
+                                    alert(error);
                                 })
                                 .then(function () {
                                     $('#pleaseWaitDialog').modal('hide');
@@ -426,7 +426,7 @@ requirejs(['jquery','bootstrap', 'Player', 'Game'], function ($, bootstrap, Play
                         return 'ok';
                     })
                     .catch(function (error) {
-                        console.log(error);
+                        alert(error);
                     })
                     .then(function () {
                         $('#pleaseWaitDialog').modal('hide');
@@ -434,7 +434,7 @@ requirejs(['jquery','bootstrap', 'Player', 'Game'], function ($, bootstrap, Play
 
                     });
 
-                $('#game_board').unbind('click').click(function(event) {
+                $('#game_board').unbind('click').click(function (event) {
                     if(event.target && event.target.className == 'square') {
                         if (event.target.innerHTML == "") {
                             var cell = event.target.id.charAt(11);
@@ -449,7 +449,7 @@ requirejs(['jquery','bootstrap', 'Player', 'Game'], function ($, bootstrap, Play
                                         return 'ok';
                                     })
                                     .catch(function (error) {
-                                        console.log(error);
+                                        alert(error);
                                     })
                                     .then(function () {
                                         $('#pleaseWaitDialog').modal('hide');
@@ -466,7 +466,7 @@ requirejs(['jquery','bootstrap', 'Player', 'Game'], function ($, bootstrap, Play
                                         return 'ok';
                                     })
                                     .catch(function (error) {
-                                        console.log(error);
+                                        alert(error);
                                     })
                                     .then(function () {
                                         $('#pleaseWaitDialog').modal('hide');
