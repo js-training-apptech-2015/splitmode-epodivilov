@@ -6,13 +6,21 @@ requirejs.config({
         }
     },
     paths: {
-        jquery: 'lib/jquery',
-        bootstrap: 'lib/bootstrap'
+        jquery: 'http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min',
+        bootstrap: 'http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min'
     }
 });
 
 
-requirejs(['jquery','bootstrap', 'Player', 'Game'], function ($, bootstrap, Player, Game) {
+define(function (require) {
+    var $ = require('jquery');
+    var bootstrap = require('bootstrap');
+
+    window.Promise = require('lib/rsvp.min').Promise;
+
+    var Player = require('Player');
+    var Game = require('Game');
+
     function App() {
         this._game = null;
         this._ui = {};
